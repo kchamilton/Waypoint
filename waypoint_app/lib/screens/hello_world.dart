@@ -66,7 +66,7 @@ class _HelloWorldPagState extends State<HelloWorldPage> {
 
   ARKitNode _createText() {
     final text = ARKitText(
-      text: 'Flutter',
+      text: 'Waypoint!',
       extrusionDepth: 1,
       materials: [
         ARKitMaterial(

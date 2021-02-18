@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:vector_math/vector_math_64.dart';
 
 import 'screens/hello_world.dart';
+import 'screens/distance_tracking.dart';
 
 void main() => runApp(MaterialApp(home: MyApp()));
 
@@ -16,7 +17,14 @@ class MyApp extends StatelessWidget {
         Icons.home,
         () => Navigator .of(context)
             .push<void>(MaterialPageRoute(builder: (c) => HelloWorldPage())),
-      )
+      ),
+      Sample(
+        'Distance tracking',
+        'Detects horizontal plane and track distance on it.',
+        Icons.blur_on,
+        () => Navigator.of(context).push<void>(
+            MaterialPageRoute(builder: (c) => DistanceTrackingPage())),
+      ),
     ];
 
     return Scaffold(
