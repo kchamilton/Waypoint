@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/hello_world.dart';
 import 'screens/distance_tracking.dart';
+import 'screens/platform_channel.dart';
 
 void main() => runApp(MaterialApp(home: MyApp()));
 
@@ -15,8 +16,8 @@ class MyApp extends StatelessWidget {
         'Hello World',
         'The simplest scene with all gemetries.',
         Icons.home,
-        () => Navigator .of(context)
-            .push<void>(MaterialPageRoute(builder: (c) => HelloWorldPage())),
+        () => Navigator .of(context).push<void>(
+          MaterialPageRoute(builder: (c) => HelloWorldPage())),
       ),
       Sample(
         'Distance tracking',
@@ -25,6 +26,13 @@ class MyApp extends StatelessWidget {
         () => Navigator.of(context).push<void>(
             MaterialPageRoute(builder: (c) => DistanceTrackingPage())),
       ),
+      Sample(
+        'Testing platform channels',
+        'Cate\'s attempt at connecting swift code to the flutter app',
+        Icons.lightbulb_outline,
+        () => Navigator.of(context).push<void>(
+          MaterialPageRoute(builder: (c) => PlatformChannelPage())),
+      ),//
     ];
 
     return Scaffold(
