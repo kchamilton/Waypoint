@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		67668E8B25ED54CF00A7CB66 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67668E8425ED54CF00A7CB66 /* AppCoordinator.swift */; };
+		67668E8C25ED54CF00A7CB66 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67668E8525ED54CF00A7CB66 /* Coordinator.swift */; };
+		67668E8D25ED54CF00A7CB66 /* FlutterCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67668E8725ED54CF00A7CB66 /* FlutterCoordinator.swift */; };
+		67BF76F325ED7EA900BF7F63 /* Map.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BF76F225ED7EA900BF7F63 /* Map.storyboard */; };
+		67BF76F625ED7EB800BF7F63 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BF76F425ED7EB800BF7F63 /* MapViewController.swift */; };
+		67BF76F725ED7EB800BF7F63 /* MapCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BF76F525ED7EB800BF7F63 /* MapCoordinator.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -33,6 +39,12 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		67668E8425ED54CF00A7CB66 /* AppCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		67668E8525ED54CF00A7CB66 /* Coordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		67668E8725ED54CF00A7CB66 /* FlutterCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlutterCoordinator.swift; sourceTree = "<group>"; };
+		67BF76F225ED7EA900BF7F63 /* Map.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Map.storyboard; sourceTree = "<group>"; };
+		67BF76F425ED7EB800BF7F63 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		67BF76F525ED7EB800BF7F63 /* MapCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapCoordinator.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75CFA9136B895BF2DBFF72CB /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +91,43 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		67668E8225ED54CF00A7CB66 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				67668E8325ED54CF00A7CB66 /* App */,
+				67668E8625ED54CF00A7CB66 /* Flutter */,
+				67668E8825ED54CF00A7CB66 /* Map */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		67668E8325ED54CF00A7CB66 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				67668E8425ED54CF00A7CB66 /* AppCoordinator.swift */,
+				67668E8525ED54CF00A7CB66 /* Coordinator.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		67668E8625ED54CF00A7CB66 /* Flutter */ = {
+			isa = PBXGroup;
+			children = (
+				67668E8725ED54CF00A7CB66 /* FlutterCoordinator.swift */,
+			);
+			path = Flutter;
+			sourceTree = "<group>";
+		};
+		67668E8825ED54CF00A7CB66 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				67BF76F525ED7EB800BF7F63 /* MapCoordinator.swift */,
+				67BF76F425ED7EB800BF7F63 /* MapViewController.swift */,
+				67BF76F225ED7EA900BF7F63 /* Map.storyboard */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +161,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				67668E8225ED54CF00A7CB66 /* Components */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -189,6 +239,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				67BF76F325ED7EA900BF7F63 /* Map.storyboard in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
@@ -271,6 +322,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67668E8C25ED54CF00A7CB66 /* Coordinator.swift in Sources */,
+				67BF76F625ED7EB800BF7F63 /* MapViewController.swift in Sources */,
+				67BF76F725ED7EB800BF7F63 /* MapCoordinator.swift in Sources */,
+				67668E8D25ED54CF00A7CB66 /* FlutterCoordinator.swift in Sources */,
+				67668E8B25ED54CF00A7CB66 /* AppCoordinator.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);

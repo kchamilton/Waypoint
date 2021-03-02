@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
+   <Group
+      location = "group:Runner/Components"
+      name = "Components">
+      <Group
+         location = "group:App"
+         name = "App">
+         <FileRef
+            location = "group:AppCoordinator.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Coordinator.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Flutter"
+         name = "Flutter">
+         <FileRef
+            location = "group:FlutterCoordinator.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Map"
+         name = "Map">
+         <FileRef
+            location = "group:MapCoordinator.swift">
+         </FileRef>
+         <FileRef
+            location = "group:MapViewController.swift">
+         </FileRef>
+      </Group>
+   </Group>
    <FileRef
       location = "group:Runner.xcodeproj">
    </FileRef>

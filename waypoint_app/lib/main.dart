@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/hello_world.dart';
 import 'screens/distance_tracking.dart';
-import 'screens/platform_channel.dart';
+import 'screens/map.dart';
 
 void main() => runApp(MaterialApp(home: MyApp()));
 
@@ -27,17 +27,17 @@ class MyApp extends StatelessWidget {
             MaterialPageRoute(builder: (c) => DistanceTrackingPage())),
       ),
       Sample(
-        'Testing platform channels',
-        'Cate\'s attempt at connecting swift code to the flutter app',
+        'Pretend you logged in.',
+        'Goes to the map',
         Icons.lightbulb_outline,
         () => Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (c) => PlatformChannelPage())),
+          MaterialPageRoute(builder: (c) => MapPage())),
       ),//
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Waypoint ARKit Demo'),
+        title: const Text('Login'),
       ),
       body:
         ListView(children: samples.map((s) => SampleItem(item: s)).toList()),
@@ -77,32 +77,3 @@ class Sample {
   final IconData icon;
   final Function onTap;
 }
-
-
-/* WORKING CODE */
-// class MyApp extends StatefulWidget {
-//   @override
-//   _MyAppState createState() => _MyAppState();
-// }
-
-// class _MyAppState extends State<MyApp> {
-//   ARKitController arkitController;
-
-//   @override
-//   void dispose() {
-//     arkitController?.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) => Scaffold(
-//       appBar: AppBar(title: const Text('ARKit in Flutter')),
-//       body: ARKitSceneView(onARKitViewCreated: onARKitViewCreated));
-
-//   void onARKitViewCreated(ARKitController arkitController) {
-//     this.arkitController = arkitController;
-//     final node = ARKitNode(
-//         geometry: ARKitSphere(radius: 0.1), position: Vector3(0, 0, -0.5));
-//     this.arkitController.add(node);
-//   }
-// }
