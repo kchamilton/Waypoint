@@ -120,34 +120,43 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 */
 
     func generateTextNode(_ position: SCNVector3) {
+        // Create alert to name label
+        let alert = UIAlertController(title: "Label Maker", message: "Enter location name", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = ""
+        }
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let userInput = alert?.textFields![0].text!
+            let textNode = SCNNode()
+            // Create text geometry
+            let textGeometry = SCNText(string: userInput , extrusionDepth: 1)
+            // Set text font and size, flatness (how smooth the text looks, and color)
+            textGeometry.font = UIFont(name: "Optima", size: 1)
+            textGeometry.flatness = 0
+            textGeometry.firstMaterial?.diffuse.contents = UIColor.white
+            textNode.geometry = textGeometry
 
-        let textNode = SCNNode()
-        // Create text geometry
-        let textGeometry = SCNText(string: "StackOverFlow" , extrusionDepth: 1)
-        // Set text font and size, flatness (how smooth the text looks, and color)
-        textGeometry.font = UIFont(name: "Optima", size: 1)
-        textGeometry.flatness = 0
-        textGeometry.firstMaterial?.diffuse.contents = UIColor.white
-        textNode.geometry = textGeometry
+            // Set the pivot at the center (for rotation)
+            let min = textNode.boundingBox.min
+            let max = textNode.boundingBox.max
+            textNode.pivot = SCNMatrix4MakeTranslation(
+                min.x + (max.x - min.x)/2,
+                min.y + (max.y - min.y)/2,
+                min.z + (max.z - min.z)/2
+            )
 
-        // Set the pivot at the center (for rotation)
-        let min = textNode.boundingBox.min
-        let max = textNode.boundingBox.max
-        textNode.pivot = SCNMatrix4MakeTranslation(
-            min.x + (max.x - min.x)/2,
-            min.y + (max.y - min.y)/2,
-            min.z + (max.z - min.z)/2
-        )
-
-        // Scale text node
-        textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
-        // Always make text face viewer
-        textNode.constraints = [SCNBillboardConstraint()]
-        // Add text node to the hierarchy and position it
-        self.sceneView.scene.rootNode.addChildNode(textNode)
-        textNode.position = position
-        // Set text node as the currently selected noed
-        currentNode = textNode
+            // Scale text node
+            textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
+            // Always make text face viewer
+            textNode.constraints = [SCNBillboardConstraint()]
+            // Add text node to the hierarchy and position it
+            self.sceneView.scene.rootNode.addChildNode(textNode)
+            textNode.position = position
+            // Set text node as the currently selected noed
+            self.currentNode = textNode
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 
     func addGestureRecognizers() {
