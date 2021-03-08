@@ -17,6 +17,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+
+    // Variables for storing current node's rotation aroun dits Y-axis
+    var currentNode: SCNNode?
+    var isRotating = false
+    var currentAngleY: Float = 0.0
     
     var worldMapURL: URL = {
         do {
@@ -47,7 +52,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         sceneView.automaticallyUpdatesLighting = true
         
         setupUI()
-        addTapGestureRecognizer()
+        addGestureRecognizers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,19 +85,134 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         sphereNode.geometry = sphere
         return sphereNode
     }
-    
-    func addTapGestureRecognizer() {
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecognized))
-        self.sceneView.addGestureRecognizer(tapGestureRecognizer)
+
+/*
+    func generateTextNode(text: String, hitTestResult: ARHitTestResult) {
+        // TODO: user input generates text node
+        // var userInput = "default"
+        // let alert = UIAlertController(title: "Label Maker", message: "Enter location name", preferredStyle: .alert)
+        // alert.addTextField { (textField) in
+        //     textField.text = ""
+        // }
+
+        // alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+        //     userInput = alert.textFields[0]
+        // }))
+        let text = SCNText(string: text, extrusionDepth: 0.1)
+        text.font = UIFont(name: "Optima", size: 1)
+        text.firstMaterial?.diffuse.contents = UIColor.white
+        let textNode = SCNNode(geometry: text)
+
+        let transform = hitTestResult.worldTransform
+        let thirdColumn = transform.columns.3
+        textNode.position = SCNVector3(thirdColumn.x,thirdColumn.y - textNode.boundingBox.max.y / 2,thirdColumn.z)
+        print("\(thirdColumn.x) \(thirdColumn.y) \(thirdColumn.z)")
+        
+        textNode.constraints = [SCNBillboardConstraint()]
+
+//        // Should orient text label to viewer
+//        let eulerAngles = self.sceneView.session.currentFrame?.camera.eulerAngles
+//        textNode.eulerAngles = SCNVector3(eulerAngles?.x ?? <#default value#>, eulerAngles?.y ?? <#default value#>, eulerAngles?.z ?? <#default value#> + .pi / 2)
+
+        // ? Need to dispatch to main queue?
+        self.sceneView.scene.rootNode.addChildNode(textNode)
     }
-    
+*/
+
+    func generateTextNode(_ position: SCNVector3) {
+
+        let textNode = SCNNode()
+        // Create text geometry
+        let textGeometry = SCNText(string: "StackOverFlow" , extrusionDepth: 1)
+        // Set text font and size, flatness (how smooth the text looks, and color)
+        textGeometry.font = UIFont(name: "Optima", size: 1)
+        textGeometry.flatness = 0
+        textGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        textNode.geometry = textGeometry
+
+        // Set the pivot at the center (for rotation)
+        let min = textNode.boundingBox.min
+        let max = textNode.boundingBox.max
+        textNode.pivot = SCNMatrix4MakeTranslation(
+            min.x + (max.x - min.x)/2,
+            min.y + (max.y - min.y)/2,
+            min.z + (max.z - min.z)/2
+        )
+
+        // Scale text node
+        textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
+        // Always make text face viewer
+        textNode.constraints = [SCNBillboardConstraint()]
+        // Add text node to the hierarchy and position it
+        self.sceneView.scene.rootNode.addChildNode(textNode)
+        textNode.position = position
+        // Set text node as the currently selected noed
+        currentNode = textNode
+    }
+
+    func addGestureRecognizers() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecognized))
+        self.sceneView.addGestureRecognizer(tapGesture)
+
+        let scaleGesture = UIPinchGestureRecognizer(target: self, action: #selector(scaleCurrentNode(_:)))
+        self.sceneView.addGestureRecognizer(scaleGesture)
+
+        // // Tap Gesture Recogizer for rotating TextNode
+        // let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotateNode(_:)))
+        // self.sceneView.addGestureRecognizer(rotateGesture)
+    }
+
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
+        // Get current location of tap
         let touchLocation = recognizer.location(in: sceneView)
-        guard let hitTestResult = sceneView.hitTest(touchLocation, types: .existingPlane).first
-            else { return }
-        let anchor = ARAnchor(transform: hitTestResult.worldTransform)
-        sceneView.session.add(anchor: anchor)
+
+        // If you hit a SCNNode, set it as the current node so you can interact with it
+        if let hitTestResult = sceneView.hitTest(touchLocation, options: nil).first?.node {
+            currentNode = hitTestResult
+            return
+        }
+
+        // Otherwise, do an ARHitTest for feature points so you can place a new SCNNode
+        if let hitTest = sceneView.hitTest(touchLocation, types: .featurePoint).first {
+            // Get world transform
+            let hitTestPosition = hitTest.worldTransform.columns.3
+            // Add text node at desired posiiton
+            generateTextNode(SCNVector3(hitTestPosition.x, hitTestPosition.y, hitTestPosition.z))
+            return
+
+        }
     }
+
+    // Resize existing tapped-on node
+    @objc func scaleCurrentNode(_ gesture: UIPinchGestureRecognizer) {
+        if !isRotating, let selectedNode = currentNode{
+            if gesture.state == .changed {
+                let pinchScaleX: CGFloat = gesture.scale * CGFloat((selectedNode.scale.x))
+                let pinchScaleY: CGFloat = gesture.scale * CGFloat((selectedNode.scale.y))
+                let pinchScaleZ: CGFloat = gesture.scale * CGFloat((selectedNode.scale.z))
+                selectedNode.scale = SCNVector3Make(Float(pinchScaleX), Float(pinchScaleY), Float(pinchScaleZ))
+                gesture.scale = 1
+            }
+            if gesture.state == .ended {}
+        }
+    }
+
+    // @objc func rotateNode(_ gesture: UIRotationGestureRecognizer){
+    //     if let selectedNode = currentNode{
+    //         // Get current rotation
+    //         let rotation = Float(gesture.rotation)
+    //         // If gesture state has changed, set the node's EulerAngles.y
+    //         if gesture.state == .changed{
+    //             isRotating = true
+    //             selectedNode.eulerAngles.y = currentAngleY + rotation
+    //         }
+    //         // If the gesture has ended, store the last angle of the current node
+    //         if (gesture.state == .ended) {
+    //             currentAngleY = selectedNode.eulerAngles.y
+    //             isRotating = false
+    //         }
+    //     }
+    // }
     
     func setupUI() {
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
@@ -163,6 +283,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         DispatchQueue.main.async {
             node.addChildNode(sphereNode)
         }
+    }
+
+    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
+        print("Will updated Node on Anchor: \(anchor.identifier)")
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        print("Did updated Node on Anchor: \(anchor.identifier)")
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        print("Removed Node on Anchor: \(anchor.identifier)")
     }
     
     // MARK: - ARSessionDelegate
