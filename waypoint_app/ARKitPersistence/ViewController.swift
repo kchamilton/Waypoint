@@ -116,7 +116,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     // MARK: - Button Actions
     
     @IBAction func loadButtonAction(_ sender: Any) {
-        guard let mapData = try? Data(contentsOf: self.worldMapURL), let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
+        guard let mapData = try? Data(contentsOf: self.worldMapURL), let worldMap = ((try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData)) as ARWorldMap??) else {
             fatalError("No ARWorldMap in archive.")
         }
         
@@ -169,14 +169,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     //shows the current status of the world map.
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         switch frame.worldMappingStatus {
-        case .notAvailable:
-            setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
-        case .limited:
-            setUpLabelsAndButtons(text: "Map Status: Available but has Limited features", canShowSaveButton: false)
-        case .extending:
-            setUpLabelsAndButtons(text: "Map Status: Actively extending the map", canShowSaveButton: false)
-        case .mapped:
-            setUpLabelsAndButtons(text: "Map Status: Mapped the visible Area", canShowSaveButton: true)
+            case .notAvailable:
+                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
+            case .limited:
+                setUpLabelsAndButtons(text: "Map Status: Available but has Limited features", canShowSaveButton: false)
+            case .extending:
+                setUpLabelsAndButtons(text: "Map Status: Actively extending the map", canShowSaveButton: false)
+            case .mapped:
+                setUpLabelsAndButtons(text: "Map Status: Mapped the visible Area", canShowSaveButton: true)
+            @unknown default:
+                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
         }
     }
 }
