@@ -17,7 +17,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
-
+    
+    var anchors: [ARAnchor] = []
+    
     // Variables for storing current node's rotation aroun dits Y-axis
     var currentNode: SCNNode?
     var isRotating = false
@@ -78,48 +80,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
     }
-    
-    func generateSphereNode() -> SCNNode {
-        let sphere = SCNSphere(radius: 0.05)
-        let sphereNode = SCNNode()
-        sphereNode.geometry = sphere
-        return sphereNode
-    }
 
-/*
-    func generateTextNode(text: String, hitTestResult: ARHitTestResult) {
-        // TODO: user input generates text node
-        // var userInput = "default"
-        // let alert = UIAlertController(title: "Label Maker", message: "Enter location name", preferredStyle: .alert)
-        // alert.addTextField { (textField) in
-        //     textField.text = ""
-        // }
+    func generateTextNode(_ worldTransform: simd_float4x4) {
+        let hitTestPosition = worldTransform.columns.3
+        let position = SCNVector3(hitTestPosition.x, hitTestPosition.y, hitTestPosition.z)
 
-        // alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
-        //     userInput = alert.textFields[0]
-        // }))
-        let text = SCNText(string: text, extrusionDepth: 0.1)
-        text.font = UIFont(name: "Optima", size: 1)
-        text.firstMaterial?.diffuse.contents = UIColor.white
-        let textNode = SCNNode(geometry: text)
-
-        let transform = hitTestResult.worldTransform
-        let thirdColumn = transform.columns.3
-        textNode.position = SCNVector3(thirdColumn.x,thirdColumn.y - textNode.boundingBox.max.y / 2,thirdColumn.z)
-        print("\(thirdColumn.x) \(thirdColumn.y) \(thirdColumn.z)")
-        
-        textNode.constraints = [SCNBillboardConstraint()]
-
-//        // Should orient text label to viewer
-//        let eulerAngles = self.sceneView.session.currentFrame?.camera.eulerAngles
-//        textNode.eulerAngles = SCNVector3(eulerAngles?.x ?? <#default value#>, eulerAngles?.y ?? <#default value#>, eulerAngles?.z ?? <#default value#> + .pi / 2)
-
-        // ? Need to dispatch to main queue?
-        self.sceneView.scene.rootNode.addChildNode(textNode)
-    }
-*/
-
-    func generateTextNode(_ position: SCNVector3) {
         // Create alert to name label
         let alert = UIAlertController(title: "Label Maker", message: "Enter location name", preferredStyle: .alert)
         alert.addTextField { (textField) in
@@ -144,6 +109,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 min.y + (max.y - min.y)/2,
                 min.z + (max.z - min.z)/2
             )
+            // Create AR anchor for text label
+            let anchor = ARAnchor(name: userInput!, transform: worldTransform)
+            self.sceneView.session.add(anchor: anchor)
+            self.anchors.append(anchor)
+            
+            for anchor in self.anchors {
+                print(anchor.name!)
+            }
 
             // Scale text node
             textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
@@ -154,6 +127,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             textNode.position = position
             // Set text node as the currently selected noed
             self.currentNode = textNode
+
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -174,21 +148,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
         // Get current location of tap
         let touchLocation = recognizer.location(in: sceneView)
-
         // If you hit a SCNNode, set it as the current node so you can interact with it
         if let hitTestResult = sceneView.hitTest(touchLocation, options: nil).first?.node {
             currentNode = hitTestResult
             return
         }
-
         // Otherwise, do an ARHitTest for feature points so you can place a new SCNNode
         if let hitTest = sceneView.hitTest(touchLocation, types: .featurePoint).first {
-            // Get world transform
-            let hitTestPosition = hitTest.worldTransform.columns.3
-            // Add text node at desired posiiton
-            generateTextNode(SCNVector3(hitTestPosition.x, hitTestPosition.y, hitTestPosition.z))
+            generateTextNode(hitTest.worldTransform)
             return
-
         }
     }
 
@@ -288,10 +256,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard !(anchor is ARPlaneAnchor) else { return }
-        let sphereNode = generateSphereNode()
-        DispatchQueue.main.async {
-            node.addChildNode(sphereNode)
-        }
+        print("Added anchor: ", anchor.name!)
     }
 
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
