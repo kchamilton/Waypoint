@@ -18,12 +18,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     
+    // * I think there's an actual anchors array held in session
     var anchors: [ARAnchor] = []
     
-    // Variables for storing current node's rotation aroun dits Y-axis
-    var currentNode: SCNNode?
-    var isRotating = false
-    var currentAngleY: Float = 0.0
+    // Variables for storing current node's rotation around its Y-axis
+    var currentNode: SCNNode? // Currently selected node
+    var isRotating = false // ! Disabled
+    var currentAngleY: Float = 0.0 // ! Disabled
     
     var worldMapURL: URL = {
         do {
@@ -113,10 +114,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             let anchor = ARAnchor(name: userInput!, transform: worldTransform)
             self.sceneView.session.add(anchor: anchor)
             self.anchors.append(anchor)
-            
-            for anchor in self.anchors {
-                print(anchor.name!)
-            }
 
             // Scale text node
             textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
@@ -127,7 +124,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             textNode.position = position
             // Set text node as the currently selected noed
             self.currentNode = textNode
-
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -174,6 +170,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
     }
 
+    // TODO: Decide if we want to keep rotateNode or not
     // @objc func rotateNode(_ gesture: UIRotationGestureRecognizer){
     //     if let selectedNode = currentNode{
     //         // Get current rotation
@@ -256,15 +253,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard !(anchor is ARPlaneAnchor) else { return }
-        print("Added anchor: ", anchor.name!)
+        print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
+        
+        for anchor in self.anchors {
+            print(anchor.name!)
+        }
     }
 
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        print("Will updated Node on Anchor: \(anchor.identifier)")
+        print("Will update Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        print("Did updated Node on Anchor: \(anchor.identifier)")
+        print("Did update Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
