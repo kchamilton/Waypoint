@@ -50,7 +50,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // Set the scene to the view
         sceneView.scene = scene
         
-        //Set lighting to the view
+        // Set lighting to the view
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
         
@@ -74,7 +74,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     func resetTrackingConfiguration() {
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal]
+        configuration.planeDetection = [.horizontal, .vertical] // Tracks horizontal AND vertical planes
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
         sceneView.debugOptions = [.showFeaturePoints]
         sceneView.session.run(configuration, options: options)
@@ -115,6 +115,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             self.sceneView.session.add(anchor: anchor)
             self.anchors.append(anchor)
 
+            print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
+        
+            for anchor in self.anchors {
+                print(anchor.name!)
+            }
+
             // Scale text node
             textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
             // Always make text face viewer
@@ -124,6 +130,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             textNode.position = position
             // Set text node as the currently selected noed
             self.currentNode = textNode
+            self.currentNode!.name = userInput // TODO: check for nil?
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -147,6 +154,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // If you hit a SCNNode, set it as the current node so you can interact with it
         if let hitTestResult = sceneView.hitTest(touchLocation, options: nil).first?.node {
             currentNode = hitTestResult
+            print("Text node ", currentNode?.name ?? "(nil)", " has been tapped!")
             return
         }
         // Otherwise, do an ARHitTest for feature points so you can place a new SCNNode
@@ -252,20 +260,53 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     // MARK: - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        guard !(anchor is ARPlaneAnchor) else { return }
-        print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
-        
-        for anchor in self.anchors {
-            print(anchor.name!)
+        guard let planeAnchor = anchor as? ARPlaneAnchor
+        else { 
+            print("Went here!")
+            return
+         }
+
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        let myPlane = SCNPlane(width: width, height: height)
+        if planeAnchor.alignment == .horizontal {
+            myPlane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+        }  else if planeAnchor.alignment == .vertical {
+            myPlane.materials.first?.diffuse.contents = UIColor.cyan.withAlphaComponent(0.8)
         }
+
+        let planeNode = SCNNode(geometry: myPlane)
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+
+        planeNode.position = SCNVector3(x, y, z)
+        planeNode.eulerAngles.x = -.pi / 2
+
+        print("Did add Node on anchor: \(anchor.identifier)")
+        node.addChildNode(planeNode)
     }
 
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        print("Will update Node on Anchor: \(anchor.identifier)")
+//        print("Will update Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        print("Did update Node on Anchor: \(anchor.identifier)")
+//        print("Did update Node on Anchor: \(anchor.identifier)")
+        guard let planeAnchor = anchor as? ARPlaneAnchor,
+              let planeNode = node.childNodes.first,
+              let myPlane = planeNode.geometry as? SCNPlane
+        else { return }
+
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        myPlane.width = width
+        myPlane.height = height
+
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x, y, z)
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
