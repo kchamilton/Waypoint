@@ -21,6 +21,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     // * I think there's an actual anchors array held in session
     var anchors: [ARAnchor] = []
     
+    var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
+    var verticalPlanes = [ARPlaneAnchor: SCNNode]()
+
     // Variables for storing current node's rotation around its Y-axis
     var currentNode: SCNNode? // Currently selected node
     var isRotating = false // ! Disabled
@@ -76,6 +79,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical] // Tracks horizontal AND vertical planes
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
+        // Delete all nodes from hierarchy
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()
+        }
+        // Delete all nodes from our personal array of anchors
+        anchors.removeAll()
         sceneView.debugOptions = [.showFeaturePoints]
         sceneView.session.run(configuration, options: options)
         
@@ -91,7 +100,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         alert.addTextField { (textField) in
             textField.text = ""
         }
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+        alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak alert] (_) in
             let userInput = alert?.textFields![0].text!
             let textNode = SCNNode()
             // Create text geometry
@@ -128,9 +137,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             // Add text node to the hierarchy and position it
             self.sceneView.scene.rootNode.addChildNode(textNode)
             textNode.position = position
-            // Set text node as the currently selected noed
+            // Set text node as the currently selected node
             self.currentNode = textNode
             self.currentNode!.name = userInput // TODO: check for nil?
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
+            print("Cancelled.")
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -139,6 +151,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     func addGestureRecognizers() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureRecognized))
         self.sceneView.addGestureRecognizer(tapGesture)
+
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized))
+        self.sceneView.addGestureRecognizer(longPressGesture)
 
         let scaleGesture = UIPinchGestureRecognizer(target: self, action: #selector(scaleCurrentNode(_:)))
         self.sceneView.addGestureRecognizer(scaleGesture)
@@ -151,22 +166,47 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
         // Get current location of tap
         let touchLocation = recognizer.location(in: sceneView)
-        // If you hit a SCNNode, set it as the current node so you can interact with it
-        if let hitTestResult = sceneView.hitTest(touchLocation, options: nil).first?.node {
-            currentNode = hitTestResult
-            print("Text node ", currentNode?.name ?? "(nil)", " has been tapped!")
-            return
-        }
-        // Otherwise, do an ARHitTest for feature points so you can place a new SCNNode
-        if let hitTest = sceneView.hitTest(touchLocation, types: .featurePoint).first {
-            generateTextNode(hitTest.worldTransform)
+        if let planeHitTest = sceneView.hitTest(touchLocation, types: .existingPlaneUsingGeometry).first {
+            print("User has tapped on an existing plane.")
+            generateTextNode(planeHitTest.worldTransform)
             return
         }
     }
 
+    // TODO: MAKE ANOTHER ALERT TO DECIDE IF YOU WANT TO RESCALE OR THROW AWAY NODE
+    @objc func longPressGestureRecognized(recognizer :UITapGestureRecognizer) {
+        let alert = UIAlertController(title: "Edit Text Node", message: "Enter node name:", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = ""
+        }
+        alert.addAction(UIAlertAction(title: "Rescale", style: .default, handler: { [weak alert] (_) in
+            let selectedNode = alert?.textFields![0].text!
+            self.currentNode = self.sceneView.scene.rootNode.childNodes.filter({ $0.name == selectedNode}).first
+            print("Should rescale")
+        }))
+        alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { [weak alert] (_) in
+            let selectedNode = alert?.textFields![0].text!
+            if (self.anchors.count > 0) { // ! Delete will fail if you try to delete with 0 anchors added
+                for index in 0...(self.anchors.count - 1) {
+                    if (self.anchors[index].name == selectedNode) {
+                        // Remove anchor from scene
+                        self.sceneView.session.remove(anchor: self.anchors[index])
+                        // Remove corresponding text node from hierarchy
+                        self.sceneView.scene.rootNode.childNodes.filter({ $0.name == selectedNode}).forEach({ $0.removeFromParentNode() })
+                        // Remove from our personal list of anchors
+                        self.anchors.remove(at: index)
+                    }
+                }
+            }
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+
     // Resize existing tapped-on node
     @objc func scaleCurrentNode(_ gesture: UIPinchGestureRecognizer) {
-        if !isRotating, let selectedNode = currentNode{
+        if !isRotating, let selectedNode = currentNode {
             if gesture.state == .changed {
                 let pinchScaleX: CGFloat = gesture.scale * CGFloat((selectedNode.scale.x))
                 let pinchScaleY: CGFloat = gesture.scale * CGFloat((selectedNode.scale.y))
@@ -265,6 +305,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             print("Went here!")
             return
          }
+        
+        var horizontal = true
 
         let width = CGFloat(planeAnchor.extent.x)
         let height = CGFloat(planeAnchor.extent.z)
@@ -272,6 +314,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         if planeAnchor.alignment == .horizontal {
             myPlane.materials.first?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
         }  else if planeAnchor.alignment == .vertical {
+            horizontal = false
             myPlane.materials.first?.diffuse.contents = UIColor.cyan.withAlphaComponent(0.8)
         }
 
@@ -285,6 +328,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
         print("Did add Node on anchor: \(anchor.identifier)")
         node.addChildNode(planeNode)
+        
+        if (horizontal) {
+            horizontalPlanes[planeAnchor] = planeNode
+        }
+        else {
+            verticalPlanes[planeAnchor] = planeNode
+        }
     }
 
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
