@@ -17,6 +17,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    //double tap attempt
+    @IBOutlet weak var viewTap: UIImageView!
+    // not sure how many times to define this?
+        var tapGesture = UITapGestureRecognizer()
     
     // * I think there's an actual anchors array held in session
     var anchors: [ARAnchor] = []
@@ -56,8 +60,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
         setupUI()
         addGestureRecognizers()
-    }
-    
+        
+        // double tap initialized
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.doubleTapGesture(_:)))
+              tapGesture.numberOfTapsRequired = 2
+              tapGesture.numberOfTouchesRequired = 2
+              viewTap.addGestureRecognizer(tapGesture)
+              viewTap.isUserInteractionEnabled = true
+       }
+   
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -140,6 +151,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         // let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotateNode(_:)))
         // self.sceneView.addGestureRecognizer(rotateGesture)
     }
+    
+   
 
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
         // Get current location of tap
@@ -155,6 +168,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             return
         }
     }
+    
+    @objc func doubleTapGesture(recognizer :UITapGestureRecognizer){
+        
+    }
 
     // Resize existing tapped-on node
     @objc func scaleCurrentNode(_ gesture: UIPinchGestureRecognizer) {
@@ -168,6 +185,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             }
             if gesture.state == .ended {}
         }
+    }
+    @objc func doubleTapGesture(_ sender:UITapGestureRecognizer){
+        print("did tap view", sender)
     }
 
     // TODO: Decide if we want to keep rotateNode or not
