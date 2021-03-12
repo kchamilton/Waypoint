@@ -17,6 +17,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var touchLabel: UIButton!
     
     // * I think there's an actual anchors array held in session
     var anchors: [ARAnchor] = []
@@ -59,6 +60,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
         setupUI()
         addGestureRecognizers()
+        
+        
+           
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -379,4 +383,25 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
         }
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    if let touch = touches.first {
+        let location = touch.location(in: self.view)
+        print( location.x)
+        print( location.y)
+        let alert = UIAlertController(title: "My Title", message:"\(location.x)", preferredStyle: .alert)
+
+        // add an action (button)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+
+        // show the alert
+        present(alert, animated: true, completion: nil)
+      }
+        
+    }
+    
+    
+    
+    
+    
 }
