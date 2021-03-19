@@ -10,6 +10,8 @@ import UIKit
 import SceneKit
 import ARKit
 
+// ! Arrow pointing leaves something to be desired... - Cate
+
 class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
@@ -31,6 +33,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     var isRotating = false // ! Disabled
     var currentAngleY: Float = 0.0 // ! Disabled
+    
+    // Distance from user to destination in meters
+    var distanceToDest: Float = 0.0
     
     var worldMapURL: URL = {
         do {
@@ -62,10 +67,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         
         setupUI()
         addGestureRecognizers()
-        
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            print(node)
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -314,17 +315,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 arrowNode.name = "arrow"
                 arrowNode.position = SCNVector3(x: 0, y: 0, z: -2)
                 arrowNode.scale = SCNVector3(0.1, 0.1, 0.1)
+                arrowNode.constraints = [SCNLookAtConstraint.init(target: currentNode)]
                 return arrowNode
     }
-    
-    // * Should display distance from user to currently selected node in a label
-//    func updateArrow() {
-//        let userPosition = frame.camera.transform.columns.3
-//        let destPosition = currentNodeAnchor!.transform.columns.3
-//        let userToDest = userPosition - destPosition
-//        let distance = length(userToDest)
-//        self.distanceLabel.text = "\(distance)"
-//    }
     
     func showAlert(message: String) {
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertController.Style.alert)
@@ -446,26 +439,28 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         if currentNode != nil {
             let arrow = sceneView.scene.rootNode.childNode(withName: "arrow", recursively: true)
+            // Point arrow at destination
             arrow?.constraints = [SCNLookAtConstraint.init(target: currentNode)]
             
+            // Generate arrow
             if let pointOfView = sceneView.pointOfView {
-                let isMaybeVisible = sceneView.isNode(currentNode!, insideFrustumOf: pointOfView)
-                if isMaybeVisible {
-//                    print("node is maybe visible")
-                    if arrow != nil {
-//                        print("Removing arrow. Node has been found.")
-                        arrow!.removeFromParentNode()
+                if arrow == nil {
+                    let arrowNode = generateArrowNode()
+                    DispatchQueue.main.async {
+                        pointOfView.name = "camera"
+                        self.sceneView.scene.rootNode.addChildNode(pointOfView)
+                        self.sceneView.scene.rootNode.childNode(withName: "camera", recursively: true)!.addChildNode(arrowNode)
                     }
                 } else {
-//                    print("node is not visible")
-                    if arrow == nil {
-//                        print("Generating arrow")
-                        let arrowNode = generateArrowNode()
-                        DispatchQueue.main.async {
-                            pointOfView.name = "camera"
-                            self.sceneView.scene.rootNode.addChildNode(pointOfView)
-                            self.sceneView.scene.rootNode.childNode(withName: "camera", recursively: true)!.addChildNode(arrowNode)
-                        }
+                    // Update arrow with fun colors (values just for testing)
+                    let materials = arrow!.geometry?.materials
+                    let material = materials![0]
+                    if distanceToDest <= 5.0 {
+                        material.diffuse.contents = UIColor.systemGreen
+                    } else if distanceToDest <= 10.0 && distanceToDest > 5.0 {
+                        material.diffuse.contents = UIColor.systemYellow
+                    } else {
+                        material.diffuse.contents = UIColor.systemRed
                     }
                 }
             }
@@ -473,18 +468,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 //        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
 //            print(node)
 //        }
-        
     }
     
     // MARK: - ARSessionDelegate
     //shows the current status of the world map.
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        // Updates distance to selected node
         var distance = "Distance: N/A"
         if currentNodeAnchor != nil {
             let userPosition = frame.camera.transform.columns.3
             let destPosition = currentNodeAnchor!.transform.columns.3
-            let userToDest = length(userPosition - destPosition).rounded()
-            distance = "Distance: " + String(userToDest) + "m away"
+            distanceToDest = length(userPosition - destPosition).rounded()
+            distance = "You are " + String(distanceToDest) + "m away from " + currentNodeAnchor!.name!
         }
         
         switch frame.worldMappingStatus {
