@@ -12,6 +12,7 @@
 		1802A2FC2181A26900045536 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1802A2FA2181A26900045536 /* Main.storyboard */; };
 		1802A2FE2181A26B00045536 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1802A2FD2181A26B00045536 /* Assets.xcassets */; };
 		1802A3012181A26B00045536 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1802A2FF2181A26B00045536 /* LaunchScreen.storyboard */; };
+		675EA46426014CCE00FDAD06 /* Arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 675EA46326014CCE00FDAD06 /* Arrow.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		1802A2FD2181A26B00045536 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1802A3002181A26B00045536 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1802A3022181A26B00045536 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		675EA46326014CCE00FDAD06 /* Arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Arrow.png; path = Assets.xcassets/Arrow.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 				1802A2F82181A26900045536 /* ViewController.swift */,
 				1802A2FA2181A26900045536 /* Main.storyboard */,
 				1802A2FD2181A26B00045536 /* Assets.xcassets */,
+				675EA46326014CCE00FDAD06 /* Arrow.png */,
 				1802A2FF2181A26B00045536 /* LaunchScreen.storyboard */,
 				1802A3022181A26B00045536 /* Info.plist */,
 			);
@@ -126,6 +129,7 @@
 				1802A3012181A26B00045536 /* LaunchScreen.storyboard in Resources */,
 				1802A2FE2181A26B00045536 /* Assets.xcassets in Resources */,
 				1802A2FC2181A26900045536 /* Main.storyboard in Resources */,
+				675EA46426014CCE00FDAD06 /* Arrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
