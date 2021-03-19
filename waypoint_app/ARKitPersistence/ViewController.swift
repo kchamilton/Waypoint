@@ -99,7 +99,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         sceneView.debugOptions = [.showFeaturePoints]
         sceneView.session.run(configuration, options: options)
         
-        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
+        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false, distance: "Distance: N/A")
+        
+        // Reset selected node
+        currentNode = nil
+        currentNodeAnchor = nil
     }
 
     func generateTextNode(_ worldTransform: simd_float4x4) {
@@ -136,10 +140,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             self.anchors.append(anchor)
 
             print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
-        
-            for anchor in self.anchors {
-                print(anchor.name!)
-            }
 
             // Scale text node
             textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
@@ -200,7 +200,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }))
         alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { [weak alert] (_) in
             let selectedNode = alert?.textFields![0].text!
-            if (self.anchors.count > 0) { // ! Delete will fail if you try to delete with 0 anchors added
+            if (self.anchors.count > 0 && self.currentNodeAnchor!.name != selectedNode) { // ! Delete will fail if you try to delete with 0 anchors added, and nothing will happen if you try to delete the currently selected node.
                 for index in 0...(self.anchors.count - 1) {
                     if (self.anchors[index].name == selectedNode) {
                         // Remove anchor from scene
@@ -251,37 +251,21 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     // }
     
     func setupUI() {
-        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
+        setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false, distance: "Distance: N/A")
         loadButton.layer.cornerRadius = 10
         saveButton.layer.cornerRadius = 10
         resetButton.layer.cornerRadius = 10
         // guard let pointOfView = self.sceneView.pointOfView else {return}
     }
     
-    func setUpLabelsAndButtons(text: String, canShowSaveButton: Bool) {
+    func setUpLabelsAndButtons(text: String, canShowSaveButton: Bool, distance: String) {
         self.infoLabel.text = text
         self.saveButton.isEnabled = canShowSaveButton
-//        updateArrow()
+        self.distanceLabel.text = distance
     }
 
 //     // * Should create fixed arrow, centered at bottom of the scene
     func generateArrowNode() -> SCNNode {
-//        let image = UIImage(named: "Arrow.png")
-//        let arrowNode = SCNNode(geometry: SCNPlane(width: 1, height: 1))
-//        arrowNode.geometry?.firstMaterial?.diffuse.contents = image
-//
-//        print("generating arrow node")
-////        let sphere = SCNSphere(radius: 0.25)
-////        sphere.firstMaterial?.diffuse.contents = UIColor.systemPink
-////        let material = SCNMaterial()
-////        material.diffuse.contents = UIColor.systemPink
-////        sphere.materials = [material]
-////        let arrowNode = SCNNode()
-////        arrowNode.geometry = sphere
-//        arrowNode.name = "arrow"
-//        arrowNode.position = SCNVector3(x: 0, y: 0, z: -2)
-//        return arrowNode
-        
         // Sourced from: https://stackoverflow.com/questions/47191068/how-to-draw-an-arrow-in-scenekit/47207312
         let vertcount = 48;
                 let verts: [Float] = [ -1.4923, 1.1824, 2.5000, -6.4923, 0.000, 0.000, -1.4923, -1.1824, 2.5000, 4.6077, -0.5812, 1.6800, 4.6077, -0.5812, -1.6800, 4.6077, 0.5812, -1.6800, 4.6077, 0.5812, 1.6800, -1.4923, -1.1824, -2.5000, -1.4923, 1.1824, -2.5000, -1.4923, 0.4974, -0.9969, -1.4923, 0.4974, 0.9969, -1.4923, -0.4974, 0.9969, -1.4923, -0.4974, -0.9969 ];
@@ -333,11 +317,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
                 return arrowNode
     }
     
-    
-
-//    // * Should display distance from user to currently selected node in a label
+    // * Should display distance from user to currently selected node in a label
 //    func updateArrow() {
-//        let userPosition = sceneView.session.currentFrame!.camera.transform.columns.3
+//        let userPosition = frame.camera.transform.columns.3
 //        let destPosition = currentNodeAnchor!.transform.columns.3
 //        let userToDest = userPosition - destPosition
 //        let distance = length(userToDest)
@@ -366,7 +348,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             configuration.initialWorldMap = worldMap
             showAlert(message: "Map Loaded")
         } else {
-            setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
+            setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false, distance: "Distance: N/A")
         }
         sceneView.debugOptions = [.showFeaturePoints]
         sceneView.session.run(configuration, options: options)
@@ -379,7 +361,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBAction func saveButtonAction(_ sender: Any) {
         sceneView.session.getCurrentWorldMap { (worldMap, error) in
             guard let worldMap = worldMap else {
-                self.setUpLabelsAndButtons(text: "Can't get current world map", canShowSaveButton: false)
+                self.setUpLabelsAndButtons(text: "Can't get current world map", canShowSaveButton: false, distance: "Distance: N/A")
                 self.showAlert(message: error!.localizedDescription)
                 return
             }
@@ -497,18 +479,25 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     // MARK: - ARSessionDelegate
     //shows the current status of the world map.
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-//        self.sceneView.session.
+        var distance = "Distance: N/A"
+        if currentNodeAnchor != nil {
+            let userPosition = frame.camera.transform.columns.3
+            let destPosition = currentNodeAnchor!.transform.columns.3
+            let userToDest = length(userPosition - destPosition).rounded()
+            distance = "Distance: " + String(userToDest) + "m away"
+        }
+        
         switch frame.worldMappingStatus {
             case .notAvailable:
-                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
+                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false, distance: distance)
             case .limited:
-                setUpLabelsAndButtons(text: "Map Status: Available but has Limited features", canShowSaveButton: false)
+                setUpLabelsAndButtons(text: "Map Status: Available but has Limited features", canShowSaveButton: false, distance: distance)
             case .extending:
-                setUpLabelsAndButtons(text: "Map Status: Actively extending the map", canShowSaveButton: false)
+                setUpLabelsAndButtons(text: "Map Status: Actively extending the map", canShowSaveButton: false, distance: distance)
             case .mapped:
-                setUpLabelsAndButtons(text: "Map Status: Mapped the visible Area", canShowSaveButton: true)
+                setUpLabelsAndButtons(text: "Map Status: Mapped the visible Area", canShowSaveButton: true, distance: distance)
             @unknown default:
-                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
+                setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false, distance: distance)
         }
     }
 }
