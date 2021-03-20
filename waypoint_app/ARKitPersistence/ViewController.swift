@@ -118,6 +118,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak alert] (_) in
             let userInput = alert?.textFields![0].text!
+            
+            // Check to verify inputted location is unique and non-nil
+            if (self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)) != nil || userInput == "" {
+                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location name is unique and non-empty.", preferredStyle: .alert)
+                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
+                    print("Adding location node cancelled.")
+                }))
+                self.present(errorAlert, animated: true, completion: nil)
+            }
+            
             let textNode = SCNNode()
             // Create text geometry
             let textGeometry = SCNText(string: userInput , extrusionDepth: 1)
