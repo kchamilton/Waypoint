@@ -61,9 +61,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.automaticallyUpdatesLighting = true
         
         setupUI()
-        
-        chooseDestination()
-    }
+}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -102,43 +100,44 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.distanceLabel.text = distance
     }
     
-    func chooseDestination() {
-        let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.text = ""
-        }
-        alert.addAction(UIAlertAction(title: "Let's Go!", style: .default, handler: { [weak alert] (_) in
-            let userInput = alert?.textFields![0].text!
-            
-            self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
-            
-            // Check to verify inputted location is unique and non-nil
-            if self.destNode == nil || userInput == "" {
-                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
-                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
-                    print("Choosing destination cancelled")
-                }))
-                self.present(errorAlert, animated: true, completion: self.chooseDestination)
-            }
-            // Set the location as the destination node
-            for index in 0...(self.anchors.count - 1) {
-                if self.anchors[index].name == userInput {
-                    self.destNodeAnchor = self.anchors[index]
-                } else {
-                    print("No anchor found with that matching destination")
-                }
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
-            print("Cancelled.")
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
+//    func chooseDestination() {
+//        let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
+//        alert.addTextField { (textField) in
+//            textField.text = ""
+//        }
+//        alert.addAction(UIAlertAction(title: "Let's Go!", style: .default, handler: { [weak alert] (_) in
+//            let userInput = alert?.textFields![0].text!
+//
+//            self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
+//
+//            // Check to verify inputted location is unique and non-nil
+//            if self.destNode == nil || userInput == "" {
+//                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
+//                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
+//                    print("Choosing destination cancelled")
+//                }))
+//                self.present(errorAlert, animated: true, completion: self.chooseDestination)
+//            }
+//            // Set the location as the destination node
+//            for index in 0...(self.anchors.count - 1) {
+//                if self.anchors[index].name == userInput {
+//                    self.destNodeAnchor = self.anchors[index]
+//                } else {
+//                    print("No anchor found with that matching destination")
+//                }
+//            }
+//        }))
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
+//            print("Cancelled.")
+//        }))
+//
+//        self.present(alert, animated: true, completion: nil)
+//    }
     
     func generateTextNode(label: String, anchor: ARAnchor) {
         print("Generating text node for ", label)
         let textNode = SCNNode()
+        textNode.name = label
         // Create text geometry
         let textGeometry = SCNText(string: label , extrusionDepth: 1)
         // Set text font and size, flatness (how smooth the text looks, and color)
@@ -257,6 +256,42 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             print(node)
         }
+    }
+    
+    
+    @IBAction func searchButtonAction(_ sender: Any) {
+        let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.text = ""
+        }
+        alert.addAction(UIAlertAction(title: "Let's Go!", style: .default, handler: { [weak alert] (_) in
+            let userInput = alert?.textFields![0].text!
+            
+            self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
+            
+            // Check to verify inputted location is unique and non-nil
+            if self.destNode == nil || userInput == "" {
+                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
+                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
+                    print("Choosing destination cancelled")
+                }))
+                self.present(errorAlert, animated: true, completion: nil)
+                return
+            }
+            // Set the location as the destination node
+            for index in 0...(self.anchors.count - 1) {
+                if self.anchors[index].name == userInput {
+                    self.destNodeAnchor = self.anchors[index]
+                } else {
+                    print("No anchor found with that matching destination")
+                }
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
+            print("Cancelled.")
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
