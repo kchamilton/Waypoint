@@ -30,12 +30,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var destNode: SCNNode?
     
     var distanceToDest: Float = 0.0
-  /// This will render the map to the device
-    /**
-     Author : Cate Yuk
-     Function to use 
- 
- */
+  /// This fucntion will render the map to the device
     var worldMapURL: URL = {
         do {
             return try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
