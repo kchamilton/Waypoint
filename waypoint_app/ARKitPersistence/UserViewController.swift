@@ -18,6 +18,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var searchButton: UIButton!
+    @IBOutlet weak var logoutButton: UIButton!
     
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()

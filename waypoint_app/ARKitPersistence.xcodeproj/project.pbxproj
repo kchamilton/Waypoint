@@ -14,7 +14,21 @@
 		675EA46426014CCE00FDAD06 /* Arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 675EA46326014CCE00FDAD06 /* Arrow.png */; };
 		677DE528260974E900E530A2 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677DE526260974E900E530A2 /* UserViewController.swift */; };
 		677DE529260974E900E530A2 /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677DE527260974E900E530A2 /* AdminViewController.swift */; };
+		67CC5486260A7ABB00C5A8A2 /* LoginViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC5485260A7ABB00C5A8A2 /* LoginViewControllerTests.swift */; };
+		67CC5490260A7D3F00C5A8A2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC548F260A7D3F00C5A8A2 /* LoginViewController.swift */; };
+		67CC5496260A82DB00C5A8A2 /* AdminViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC5495260A82DB00C5A8A2 /* AdminViewControllerTests.swift */; };
+		67CC549A260A889300C5A8A2 /* UserViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC5499260A889300C5A8A2 /* UserViewControllerTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		67CC5488260A7ABB00C5A8A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1802A2E92181A26900045536 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1802A2F02181A26900045536;
+			remoteInfo = ARKitPersistence;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1802A2F12181A26900045536 /* ARKitPersistence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitPersistence.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,10 +40,23 @@
 		675EA46326014CCE00FDAD06 /* Arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Arrow.png; path = Assets.xcassets/Arrow.png; sourceTree = "<group>"; };
 		677DE526260974E900E530A2 /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		677DE527260974E900E530A2 /* AdminViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
+		67CC5483260A7ABB00C5A8A2 /* ARKitPersistenceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ARKitPersistenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		67CC5485260A7ABB00C5A8A2 /* LoginViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewControllerTests.swift; sourceTree = "<group>"; };
+		67CC5487260A7ABB00C5A8A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		67CC548F260A7D3F00C5A8A2 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		67CC5495260A82DB00C5A8A2 /* AdminViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewControllerTests.swift; sourceTree = "<group>"; };
+		67CC5499260A889300C5A8A2 /* UserViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewControllerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1802A2EE2181A26900045536 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67CC5480260A7ABB00C5A8A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -43,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				1802A2F32181A26900045536 /* ARKitPersistence */,
+				67CC5484260A7ABB00C5A8A2 /* ARKitPersistenceTests */,
 				1802A2F22181A26900045536 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				1802A2F12181A26900045536 /* ARKitPersistence.app */,
+				67CC5483260A7ABB00C5A8A2 /* ARKitPersistenceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -60,6 +89,7 @@
 			children = (
 				1802A2F42181A26900045536 /* AppDelegate.swift */,
 				1802A2FA2181A26900045536 /* Main.storyboard */,
+				67CC548F260A7D3F00C5A8A2 /* LoginViewController.swift */,
 				677DE527260974E900E530A2 /* AdminViewController.swift */,
 				677DE526260974E900E530A2 /* UserViewController.swift */,
 				1802A2FD2181A26B00045536 /* Assets.xcassets */,
@@ -68,6 +98,17 @@
 				1802A3022181A26B00045536 /* Info.plist */,
 			);
 			path = ARKitPersistence;
+			sourceTree = "<group>";
+		};
+		67CC5484260A7ABB00C5A8A2 /* ARKitPersistenceTests */ = {
+			isa = PBXGroup;
+			children = (
+				67CC5499260A889300C5A8A2 /* UserViewControllerTests.swift */,
+				67CC5495260A82DB00C5A8A2 /* AdminViewControllerTests.swift */,
+				67CC5485260A7ABB00C5A8A2 /* LoginViewControllerTests.swift */,
+				67CC5487260A7ABB00C5A8A2 /* Info.plist */,
+			);
+			path = ARKitPersistenceTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,19 +131,41 @@
 			productReference = 1802A2F12181A26900045536 /* ARKitPersistence.app */;
 			productType = "com.apple.product-type.application";
 		};
+		67CC5482260A7ABB00C5A8A2 /* ARKitPersistenceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67CC548C260A7ABB00C5A8A2 /* Build configuration list for PBXNativeTarget "ARKitPersistenceTests" */;
+			buildPhases = (
+				67CC547F260A7ABB00C5A8A2 /* Sources */,
+				67CC5480260A7ABB00C5A8A2 /* Frameworks */,
+				67CC5481260A7ABB00C5A8A2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				67CC5489260A7ABB00C5A8A2 /* PBXTargetDependency */,
+			);
+			name = ARKitPersistenceTests;
+			productName = ARKitPersistenceTests;
+			productReference = 67CC5483260A7ABB00C5A8A2 /* ARKitPersistenceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		1802A2E92181A26900045536 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					1802A2F02181A26900045536 = {
 						CreatedOnToolsVersion = 10.0;
 						LastSwiftMigration = 1240;
+					};
+					67CC5482260A7ABB00C5A8A2 = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = 1802A2F02181A26900045536;
 					};
 				};
 			};
@@ -120,6 +183,7 @@
 			projectRoot = "";
 			targets = (
 				1802A2F02181A26900045536 /* ARKitPersistence */,
+				67CC5482260A7ABB00C5A8A2 /* ARKitPersistenceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -136,6 +200,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		67CC5481260A7ABB00C5A8A2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -143,13 +214,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67CC5490260A7D3F00C5A8A2 /* LoginViewController.swift in Sources */,
 				677DE529260974E900E530A2 /* AdminViewController.swift in Sources */,
 				677DE528260974E900E530A2 /* UserViewController.swift in Sources */,
 				1802A2F52181A26900045536 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		67CC547F260A7ABB00C5A8A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67CC5496260A82DB00C5A8A2 /* AdminViewControllerTests.swift in Sources */,
+				67CC5486260A7ABB00C5A8A2 /* LoginViewControllerTests.swift in Sources */,
+				67CC549A260A889300C5A8A2 /* UserViewControllerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		67CC5489260A7ABB00C5A8A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1802A2F02181A26900045536 /* ARKitPersistence */;
+			targetProxy = 67CC5488260A7ABB00C5A8A2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		1802A2FA2181A26900045536 /* Main.storyboard */ = {
@@ -326,6 +416,48 @@
 			};
 			name = Release;
 		};
+		67CC548A260A7ABB00C5A8A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BQ79AAK23R;
+				INFOPLIST_FILE = ARKitPersistenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ua.seniordesign.ARKitPersistenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ARKitPersistence.app/ARKitPersistence";
+			};
+			name = Debug;
+		};
+		67CC548B260A7ABB00C5A8A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BQ79AAK23R;
+				INFOPLIST_FILE = ARKitPersistenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ua.seniordesign.ARKitPersistenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ARKitPersistence.app/ARKitPersistence";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -343,6 +475,15 @@
 			buildConfigurations = (
 				1802A3062181A26B00045536 /* Debug */,
 				1802A3072181A26B00045536 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		67CC548C260A7ABB00C5A8A2 /* Build configuration list for PBXNativeTarget "ARKitPersistenceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67CC548A260A7ABB00C5A8A2 /* Debug */,
+				67CC548B260A7ABB00C5A8A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
