@@ -6,19 +6,20 @@
 //  Copyright © 2018 YellowJersey. All rights reserved.
 //
 
+// ! SCALING DOES NOT PERSIST. I AM NOT SURE IF ANYTHING PERSISTS LMAO - cate
+
 import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
+class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
-    @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     
-    // * I think there's an actual anchors array held in session
     var anchors: [ARAnchor] = []
     
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
@@ -26,6 +27,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
     // Variables for storing current node's rotation around its Y-axis
     var currentNode: SCNNode? // Currently selected node
+
     var isRotating = false // ! Disabled
     var currentAngleY: Float = 0.0 // ! Disabled
     
@@ -57,7 +59,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
         
-        setupUI()
+        setUpUI()
         addGestureRecognizers()
     }
     
@@ -85,10 +87,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
         // Delete all nodes from our personal array of anchors
         anchors.removeAll()
+        // Delete all plane anchors
+        verticalPlanes.removeAll()
+        horizontalPlanes.removeAll()
+
         sceneView.debugOptions = [.showFeaturePoints]
         sceneView.session.run(configuration, options: options)
         
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
+        
+        // Reset selected node
+        currentNode = nil
     }
 
     func generateTextNode(_ worldTransform: simd_float4x4) {
@@ -102,6 +111,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak alert] (_) in
             let userInput = alert?.textFields![0].text!
+            
+            // Check to verify inputted location is unique and non-nil
+            if (self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)) != nil || userInput == "" {
+                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location name is unique and non-empty.", preferredStyle: .alert)
+                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
+                    print("Adding location node cancelled.")
+                }))
+                self.present(errorAlert, animated: true, completion: nil)
+            }
+            
             let textNode = SCNNode()
             // Create text geometry
             let textGeometry = SCNText(string: userInput , extrusionDepth: 1)
@@ -125,13 +144,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
             self.anchors.append(anchor)
 
             print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
-        
-            for anchor in self.anchors {
-                print(anchor.name!)
-            }
 
             // Scale text node
-            textNode.scale = SCNVector3(0.005, 0.005 , 0.005)
+            textNode.scale = SCNVector3(0.05, 0.05 , 0.05)
             // Always make text face viewer
             textNode.constraints = [SCNBillboardConstraint()]
             // Add text node to the hierarchy and position it
@@ -181,12 +196,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
         alert.addAction(UIAlertAction(title: "Rescale", style: .default, handler: { [weak alert] (_) in
             let selectedNode = alert?.textFields![0].text!
-            self.currentNode = self.sceneView.scene.rootNode.childNodes.filter({ $0.name == selectedNode}).first
+//            self.currentNode = self.sceneView.scene.rootNode.childNodes.filter({ $0.name == selectedNode}).first
+            self.currentNode = self.sceneView.scene.rootNode.childNode(withName: selectedNode!, recursively: true) ?? self.currentNode
             print("Should rescale")
         }))
         alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { [weak alert] (_) in
             let selectedNode = alert?.textFields![0].text!
-            if (self.anchors.count > 0) { // ! Delete will fail if you try to delete with 0 anchors added
+            if (self.anchors.count > 0 && self.currentNode!.name != selectedNode) { // ! Delete will fail if you try to delete with 0 anchors added, and nothing will happen if you try to delete the currently selected node.
                 for index in 0...(self.anchors.count - 1) {
                     if (self.anchors[index].name == selectedNode) {
                         // Remove anchor from scene
@@ -236,11 +252,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     //     }
     // }
     
-    func setupUI() {
+    func setUpUI() {
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
         loadButton.layer.cornerRadius = 10
         saveButton.layer.cornerRadius = 10
         resetButton.layer.cornerRadius = 10
+        // guard let pointOfView = self.sceneView.pointOfView else {return}
     }
     
     func setUpLabelsAndButtons(text: String, canShowSaveButton: Bool) {
@@ -253,7 +270,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
     
     // MARK: - Button Actions
     
@@ -299,7 +315,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     // MARK: - ARSCNViewDelegate
     
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {             
+        // ? Should text nodes be children of their plane?
         guard let planeAnchor = anchor as? ARPlaneAnchor
         else { 
             print("Went here!")
@@ -329,6 +346,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         print("Did add Node on anchor: \(anchor.identifier)")
         node.addChildNode(planeNode)
         
+        // TODO: Grab plane anchors from existing anchors as well
+        // Add to plane arrays
         if (horizontal) {
             horizontalPlanes[planeAnchor] = planeNode
         }
@@ -338,11 +357,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     }
 
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-//        print("Will update Node on Anchor: \(anchor.identifier)")
+        // print("Will update Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-//        print("Did update Node on Anchor: \(anchor.identifier)")
+        // print("Did update Node on Anchor: \(anchor.identifier)")
         guard let planeAnchor = anchor as? ARPlaneAnchor,
               let planeNode = node.childNodes.first,
               let myPlane = planeNode.geometry as? SCNPlane
@@ -380,3 +399,4 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
     }
 }
+
