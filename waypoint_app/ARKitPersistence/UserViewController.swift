@@ -30,9 +30,8 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var destNodeAnchor: ARAnchor?
     var destNode: SCNNode?
     
-    // Distance from user to destination in meters
     var distanceToDest: Float = 0.0
-    
+  /// This fucntion will render the map to the device
     var worldMapURL: URL = {
         do {
             return try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -45,19 +44,19 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set the view's delegate
+        /// Set the view's delegate
         sceneView.delegate = self
         
-        // set session delegate
+        /// set session delegate
         self.sceneView.session.delegate = self
         
-        // Create a new scene
+        /// Create a new scene
         let scene = SCNScene()
         
-        // Set the scene to the view
+        /// Set the scene to the view
         sceneView.scene = scene
         
-        // Set lighting to the view
+        /// Set lighting to the view
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
         
@@ -67,21 +66,21 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Create a session configuration and run the view's session
+        /// Create a session configuration and run the view's session
         resetTrackingConfiguration()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Pause the view's session
+        /// Pause the view's session
         sceneView.session.pause()
     }
     
     func resetTrackingConfiguration() {
         let configuration = ARWorldTrackingConfiguration()
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
-        // Delete all nodes from hierarchy
+        /// Delete all nodes from hierarchy
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             node.removeFromParentNode()
         }
@@ -134,20 +133,20 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 //
 //        self.present(alert, animated: true, completion: nil)
 //    }
-    
+    ///Generates a text box to a node
     func generateTextNode(label: String, anchor: ARAnchor) {
         print("Generating text node for ", label)
         let textNode = SCNNode()
         textNode.name = label
-        // Create text geometry
+        /// Create text geometry
         let textGeometry = SCNText(string: label , extrusionDepth: 1)
-        // Set text font and size, flatness (how smooth the text looks, and color)
+        /// Set text font and size, flatness (how smooth the text looks, and color)
         textGeometry.font = UIFont(name: "Optima", size: 1)
         textGeometry.flatness = 0
         textGeometry.firstMaterial?.diffuse.contents = UIColor.white
         textNode.geometry = textGeometry
 
-        // Set the pivot at the center (for rotation)
+        /// Set the pivot at the center (for rotation)
         let min = textNode.boundingBox.min
         let max = textNode.boundingBox.max
         textNode.pivot = SCNMatrix4MakeTranslation(
@@ -155,20 +154,20 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             min.y + (max.y - min.y)/2,
             min.z + (max.z - min.z)/2
         )
-        // Scale text node
+        /// Scale text node
         textNode.scale = SCNVector3(0.05, 0.05 , 0.05)
-        // Always make text face viewer
+        /// Always make text face viewer
         textNode.constraints = [SCNBillboardConstraint()]
-        // Add text node to the hierarchy and position it
+        /// Add text node to the hierarchy and position it
         self.sceneView.scene.rootNode.addChildNode(textNode)
         
         let position = anchor.transform.columns.3
         textNode.position = SCNVector3(position.x, position.y, position.z)
     }
 
-//     // * Should create fixed arrow, centered at bottom of the scene
+     // * Should create fixed arrow, centered at bottom of the scene
     func generateArrowNode() -> SCNNode {
-        // Sourced from: https://stackoverflow.com/questions/47191068/how-to-draw-an-arrow-in-scenekit/47207312
+        /// Sourced from: https://stackoverflow.com/questions/47191068/how-to-draw-an-arrow-in-scenekit/47207312
         let vertcount = 48;
         let verts: [Float] = [ -1.4923, 1.1824, 2.5000, -6.4923, 0.000, 0.000, -1.4923, -1.1824, 2.5000, 4.6077, -0.5812, 1.6800, 4.6077, -0.5812, -1.6800, 4.6077, 0.5812, -1.6800, 4.6077, 0.5812, 1.6800, -1.4923, -1.1824, -2.5000, -1.4923, 1.1824, -2.5000, -1.4923, 0.4974, -0.9969, -1.4923, 0.4974, 0.9969, -1.4923, -0.4974, 0.9969, -1.4923, -0.4974, -0.9969 ];
 
@@ -210,7 +209,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         material1.specular.contents = UIColor(white:0.00, alpha:1.0)
         material1.shininess = 1.00
 
-        //Assign the SCNGeometry to a SCNNode, for example:
+        ///Assign the SCNGeometry to a SCNNode, for example:
         let arrowNode = SCNNode()
         arrowNode.geometry = geometry1
         arrowNode.name = "arrow"
@@ -259,7 +258,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
-    
+    /// Creates search bar for user to search building
     @IBAction func searchButtonAction(_ sender: Any) {
         let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
         alert.addTextField { (textField) in
@@ -270,7 +269,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             
             self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
             
-            // Check to verify inputted location is unique and non-nil
+            /// Check to verify inputted location is unique and non-nil
             if self.destNode == nil || userInput == "" {
                 let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
                 errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
@@ -279,7 +278,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 self.present(errorAlert, animated: true, completion: nil)
                 return
             }
-            // Set the location as the destination node
+            /// Set the location as the destination node
             for index in 0...(self.anchors.count - 1) {
                 if self.anchors[index].name == userInput {
                     self.destNodeAnchor = self.anchors[index]
@@ -339,10 +338,10 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         if destNodeAnchor != nil {
             let arrow = sceneView.scene.rootNode.childNode(withName: "arrow", recursively: true)
-            // Point arrow at destination
+            /// Point arrow at destination
             arrow?.constraints = [SCNLookAtConstraint.init(target: destNode)]
             
-            // Generate arrow
+            /// Generate arrow
             if let pointOfView = sceneView.pointOfView {
                 if arrow == nil {
                     let arrowNode = generateArrowNode()
@@ -352,7 +351,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                         self.sceneView.scene.rootNode.childNode(withName: "camera", recursively: true)!.addChildNode(arrowNode)
                     }
                 } else {
-                    // Update arrow with fun colors (values just for testing)
+                    /// Update arrow with fun colors (values just for testing)
                     let materials = arrow!.geometry?.materials
                     let material = materials![0]
                     if distanceToDest <= 5.0 {
@@ -371,9 +370,9 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     // MARK: - ARSessionDelegate
-    //shows the current status of the world map.
+    ///shows the current status of the world map.
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        // Updates distance to selected node
+        /// Updates distance to selected node
         var distance = "Distance: N/A"
         if destNodeAnchor != nil {
             let userPosition = frame.camera.transform.columns.3

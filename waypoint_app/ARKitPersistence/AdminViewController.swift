@@ -19,14 +19,18 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+<<<<<<< HEAD
     @IBOutlet weak var logoutButton: UIButton!
+=======
+    @IBOutlet weak var touchLabel: UIButton!
+>>>>>>> 31671c20c5c99848825fcf564459c44bf083120a
     
     var anchors: [ARAnchor] = []
     
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()
 
-    // Variables for storing current node's rotation around its Y-axis
+    /// Variables for storing current node's rotation around its Y-axis
     var currentNode: SCNNode? // Currently selected node
 
     var isRotating = false // ! Disabled
@@ -44,51 +48,54 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set the view's delegate
+        /// Set the view's delegate
         sceneView.delegate = self
         
-        // set session delegate
+        /// set session delegate
         self.sceneView.session.delegate = self
         
-        // Create a new scene
+        /// Create a new scene
         let scene = SCNScene()
         
-        // Set the scene to the view
+        /// Set the scene to the view
         sceneView.scene = scene
         
-        // Set lighting to the view
+        /// Set lighting to the view
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
         
         setUpUI()
         addGestureRecognizers()
+        
+        
+           
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Create a session configuration and run the view's session
+        /// Create a session configuration and run the view's session
         resetTrackingConfiguration()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Pause the view's session
+        /// Pause the view's session
         sceneView.session.pause()
     }
     
     func resetTrackingConfiguration() {
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical] // Tracks horizontal AND vertical planes
+        configuration.planeDetection = [.horizontal, .vertical] /// Tracks horizontal AND vertical planes
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
-        // Delete all nodes from hierarchy
+        /// Delete all nodes from hierarchy
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             node.removeFromParentNode()
         }
-        // Delete all nodes from our personal array of anchors
+        /// Delete all nodes from our personal array of anchors
         anchors.removeAll()
-        // Delete all plane anchors
+        /// Delete all plane anchors
         verticalPlanes.removeAll()
         horizontalPlanes.removeAll()
 
@@ -97,7 +104,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
         
-        // Reset selected node
+        /// Reset selected node
         currentNode = nil
     }
 
@@ -105,7 +112,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         let hitTestPosition = worldTransform.columns.3
         let position = SCNVector3(hitTestPosition.x, hitTestPosition.y, hitTestPosition.z)
 
-        // Create alert to name label
+        /// Create alert to name label
         let alert = UIAlertController(title: "Label Maker", message: "Enter location name", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.text = ""
@@ -113,7 +120,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak alert] (_) in
             let userInput = alert?.textFields![0].text!
             
-            // Check to verify inputted location is unique and non-nil
+            /// Check to verify inputted location is unique and non-nil
             if (self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)) != nil || userInput == "" {
                 let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location name is unique and non-empty.", preferredStyle: .alert)
                 errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
@@ -123,15 +130,15 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
             }
             
             let textNode = SCNNode()
-            // Create text geometry
+            /// Create text geometry
             let textGeometry = SCNText(string: userInput , extrusionDepth: 1)
-            // Set text font and size, flatness (how smooth the text looks, and color)
+            /// Set text font and size, flatness (how smooth the text looks, and color)
             textGeometry.font = UIFont(name: "Optima", size: 1)
             textGeometry.flatness = 0
             textGeometry.firstMaterial?.diffuse.contents = UIColor.white
             textNode.geometry = textGeometry
 
-            // Set the pivot at the center (for rotation)
+            /// Set the pivot at the center (for rotation)
             let min = textNode.boundingBox.min
             let max = textNode.boundingBox.max
             textNode.pivot = SCNMatrix4MakeTranslation(
@@ -139,21 +146,21 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
                 min.y + (max.y - min.y)/2,
                 min.z + (max.z - min.z)/2
             )
-            // Create AR anchor for text label
+            /// Create AR anchor for text label
             let anchor = ARAnchor(name: userInput!, transform: worldTransform)
             self.sceneView.session.add(anchor: anchor)
             self.anchors.append(anchor)
 
             print("Added anchor: \(anchor.identifier) ---> ", anchor.name!)
 
-            // Scale text node
+            /// Scale text node
             textNode.scale = SCNVector3(0.05, 0.05 , 0.05)
-            // Always make text face viewer
+            /// Always make text face viewer
             textNode.constraints = [SCNBillboardConstraint()]
-            // Add text node to the hierarchy and position it
+            /// Add text node to the hierarchy and position it
             self.sceneView.scene.rootNode.addChildNode(textNode)
             textNode.position = position
-            // Set text node as the currently selected node
+            /// Set text node as the currently selected node
             self.currentNode = textNode
             self.currentNode!.name = userInput // TODO: check for nil?
         }))
@@ -180,7 +187,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     }
 
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
-        // Get current location of tap
+        /// Get current location of tap
         let touchLocation = recognizer.location(in: sceneView)
         if let planeHitTest = sceneView.hitTest(touchLocation, types: .existingPlaneUsingGeometry).first {
             print("User has tapped on an existing plane.")
@@ -221,7 +228,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     }
     
 
-    // Resize existing tapped-on node
+    /// Resize existing tapped-on node
     @objc func scaleCurrentNode(_ gesture: UIPinchGestureRecognizer) {
         if !isRotating, let selectedNode = currentNode {
             if gesture.state == .changed {
@@ -258,7 +265,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         loadButton.layer.cornerRadius = 10
         saveButton.layer.cornerRadius = 10
         resetButton.layer.cornerRadius = 10
-        // guard let pointOfView = self.sceneView.pointOfView else {return}
+        /// guard let pointOfView = self.sceneView.pointOfView else {return}
     }
     
     func setUpLabelsAndButtons(text: String, canShowSaveButton: Bool) {
@@ -384,7 +391,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     }
     
     // MARK: - ARSessionDelegate
-    //shows the current status of the world map.
+    ///shows the current status of the world map.
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         switch frame.worldMappingStatus {
             case .notAvailable:
@@ -399,5 +406,26 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
                 setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
         }
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    if let touch = touches.first {
+        let location = touch.location(in: self.view)
+        print( location.x)
+        print( location.y)
+        let alert = UIAlertController(title: "My Title", message:"\(location.x)", preferredStyle: .alert)
+
+        // add an action (button)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+
+        // show the alert
+        present(alert, animated: true, completion: nil)
+      }
+        
+    }
+    
+    
+    
+    
+    
 }
 
