@@ -19,6 +19,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     @IBOutlet weak var loadButton: UIButton!
     @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var logoutButton: UIButton!
     
     var anchors: [ARAnchor] = []
     

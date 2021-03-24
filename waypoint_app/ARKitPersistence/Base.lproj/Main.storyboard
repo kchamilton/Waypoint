@@ -12,7 +12,7 @@
         <!--Admin View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" userLabel="Admin View Controller" customClass="AdminViewController" customModule="ARKitPersistence" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AdminViewController" id="BV1-FR-VrT" userLabel="Admin View Controller" customClass="AdminViewController" customModule="ARKitPersistence" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="U0K-SW-4ec">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -95,6 +95,7 @@
                     <connections>
                         <outlet property="infoLabel" destination="yad-rR-V4b" id="Nm9-6F-23X"/>
                         <outlet property="loadButton" destination="A4F-Ni-kDt" id="JDX-MY-h73"/>
+                        <outlet property="logoutButton" destination="36P-8s-Udw" id="qPQ-f2-hSG"/>
                         <outlet property="resetButton" destination="TJy-Jj-cD9" id="OCv-xd-nQR"/>
                         <outlet property="saveButton" destination="qFe-9h-qnt" id="GRe-E4-0VK"/>
                         <outlet property="sceneView" destination="BrB-h1-WRS" id="kQz-r8-yfO"/>
@@ -123,7 +124,7 @@
         <!--User View Controller-->
         <scene sceneID="sdD-dx-Xrq">
             <objects>
-                <viewController id="tZR-aO-nOn" userLabel="User View Controller" customClass="UserViewController" customModule="ARKitPersistence" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UserViewController" id="tZR-aO-nOn" userLabel="User View Controller" customClass="UserViewController" customModule="ARKitPersistence" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wij-Sm-adz">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -208,6 +209,7 @@
                         <outlet property="distanceLabel" destination="UW5-cc-MNf" id="xIz-AT-QdH"/>
                         <outlet property="infoLabel" destination="4C3-Cg-Y5T" id="iqJ-Rc-CKB"/>
                         <outlet property="loadButton" destination="GnD-MQ-WRs" id="C4F-Mx-pDs"/>
+                        <outlet property="logoutButton" destination="mNW-5P-hgT" id="cOq-3J-ETX"/>
                         <outlet property="sceneView" destination="dXu-M7-KHE" id="co4-Db-Tvi"/>
                         <outlet property="searchButton" destination="M68-mM-imO" id="mWS-fj-KAp"/>
                     </connections>
@@ -219,7 +221,7 @@
         <!--Login View Controller-->
         <scene sceneID="hu1-cA-K6g">
             <objects>
-                <viewController id="BQm-J1-ztY" userLabel="Login View Controller" customClass="LoginViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="BQm-J1-ztY" userLabel="Login View Controller" customClass="LoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="YNb-IW-cWL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
