@@ -6,8 +6,6 @@
 //  Copyright © 2018 YellowJersey. All rights reserved.
 //
 
-// ! SCALING DOES NOT PERSIST. I AM NOT SURE IF ANYTHING PERSISTS LMAO - cate
-
 import UIKit
 import SceneKit
 import ARKit
@@ -27,12 +25,8 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()
 
-    /// Variables for storing current node's rotation around its Y-axis
     var currentNode: SCNNode? // Currently selected node
 
-    var isRotating = false // ! Disabled
-    var currentAngleY: Float = 0.0 // ! Disabled
-    
     var worldMapURL: URL = {
         do {
             return try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -62,10 +56,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         sceneView.automaticallyUpdatesLighting = true
         
         setUpUI()
-        addGestureRecognizers()
-        
-        
-           
+        addGestureRecognizers()   
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,6 +94,37 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         
         /// Reset selected node
         currentNode = nil
+    }
+    
+    func generateExistingTextNode(label: String, anchor: ARAnchor) {
+        print("Generating text node for ", label)
+        let textNode = SCNNode()
+        textNode.name = label
+        /// Create text geometry
+        let textGeometry = SCNText(string: label , extrusionDepth: 1)
+        /// Set text font and size, flatness (how smooth the text looks, and color)
+        textGeometry.font = UIFont(name: "Optima", size: 1)
+        textGeometry.flatness = 0
+        textGeometry.firstMaterial?.diffuse.contents = UIColor.white
+        textNode.geometry = textGeometry
+
+        /// Set the pivot at the center (for rotation)
+        let min = textNode.boundingBox.min
+        let max = textNode.boundingBox.max
+        textNode.pivot = SCNMatrix4MakeTranslation(
+            min.x + (max.x - min.x)/2,
+            min.y + (max.y - min.y)/2,
+            min.z + (max.z - min.z)/2
+        )
+        /// Scale text node
+        textNode.scale = SCNVector3(0.05, 0.05 , 0.05)
+        /// Always make text face viewer
+        textNode.constraints = [SCNBillboardConstraint()]
+        /// Add text node to the hierarchy and position it
+        self.sceneView.scene.rootNode.addChildNode(textNode)
+        
+        let position = anchor.transform.columns.3
+        textNode.position = SCNVector3(position.x, position.y, position.z)
     }
 
     func generateTextNode(_ worldTransform: simd_float4x4) {
@@ -174,13 +196,6 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
 
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized))
         self.sceneView.addGestureRecognizer(longPressGesture)
-
-        let scaleGesture = UIPinchGestureRecognizer(target: self, action: #selector(scaleCurrentNode(_:)))
-        self.sceneView.addGestureRecognizer(scaleGesture)
-
-        // // Tap Gesture Recogizer for rotating TextNode
-        // let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotateNode(_:)))
-        // self.sceneView.addGestureRecognizer(rotateGesture)
     }
 
     @objc func tapGestureRecognized(recognizer :UITapGestureRecognizer) {
@@ -193,21 +208,15 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         }
     }
 
-    // TODO: MAKE ANOTHER ALERT TO DECIDE IF YOU WANT TO RESCALE OR THROW AWAY NODE
     @objc func longPressGestureRecognized(recognizer :UITapGestureRecognizer) {
-        let alert = UIAlertController(title: "Edit Text Node", message: "Enter node name:", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete Text Node", message: "Enter node name:", preferredStyle: .alert)
         alert.addTextField { (textField) in
             textField.text = ""
         }
-        alert.addAction(UIAlertAction(title: "Rescale", style: .default, handler: { [weak alert] (_) in
-            let selectedNode = alert?.textFields![0].text!
-//            self.currentNode = self.sceneView.scene.rootNode.childNodes.filter({ $0.name == selectedNode}).first
-            self.currentNode = self.sceneView.scene.rootNode.childNode(withName: selectedNode!, recursively: true) ?? self.currentNode
-            print("Should rescale")
-        }))
         alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { [weak alert] (_) in
             let selectedNode = alert?.textFields![0].text!
-            if (self.anchors.count > 0 && self.currentNode!.name != selectedNode) { // ! Delete will fail if you try to delete with 0 anchors added, and nothing will happen if you try to delete the currently selected node.
+            if (self.anchors.count > 0 && self.currentNode!.name != selectedNode) { 
+                // ! Delete will fail if you try to delete with 0 anchors added, and nothing will happen if you try to delete the currently selected node.
                 for index in 0...(self.anchors.count - 1) {
                     if (self.anchors[index].name == selectedNode) {
                         // Remove anchor from scene
@@ -223,39 +232,6 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-
-    /// Resize existing tapped-on node
-    @objc func scaleCurrentNode(_ gesture: UIPinchGestureRecognizer) {
-        if !isRotating, let selectedNode = currentNode {
-            if gesture.state == .changed {
-                let pinchScaleX: CGFloat = gesture.scale * CGFloat((selectedNode.scale.x))
-                let pinchScaleY: CGFloat = gesture.scale * CGFloat((selectedNode.scale.y))
-                let pinchScaleZ: CGFloat = gesture.scale * CGFloat((selectedNode.scale.z))
-                selectedNode.scale = SCNVector3Make(Float(pinchScaleX), Float(pinchScaleY), Float(pinchScaleZ))
-                gesture.scale = 1
-            }
-            if gesture.state == .ended {}
-        }
-    }
-
-    // TODO: Decide if we want to keep rotateNode or not
-    // @objc func rotateNode(_ gesture: UIRotationGestureRecognizer){
-    //     if let selectedNode = currentNode{
-    //         // Get current rotation
-    //         let rotation = Float(gesture.rotation)
-    //         // If gesture state has changed, set the node's EulerAngles.y
-    //         if gesture.state == .changed{
-    //             isRotating = true
-    //             selectedNode.eulerAngles.y = currentAngleY + rotation
-    //         }
-    //         // If the gesture has ended, store the last angle of the current node
-    //         if (gesture.state == .ended) {
-    //             currentAngleY = selectedNode.eulerAngles.y
-    //             isRotating = false
-    //         }
-    //     }
-    // }
     
     func setUpUI() {
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", canShowSaveButton: false)
@@ -324,10 +300,14 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         // ? Should text nodes be children of their plane?
         guard let planeAnchor = anchor as? ARPlaneAnchor
         else { 
-            print("Went here!")
+            print("Rendering location anchor")
+            // Location anchors
+            generateExistingTextNode(label: anchor.name ?? "???", anchor: anchor)
             return
          }
         
+        
+        // ! Planes layer on top of each other... It's kinda hard to see
         var horizontal = true
 
         let width = CGFloat(planeAnchor.extent.x)
@@ -403,26 +383,5 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
                 setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
         }
     }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    if let touch = touches.first {
-        let location = touch.location(in: self.view)
-        print( location.x)
-        print( location.y)
-        let alert = UIAlertController(title: "My Title", message:"\(location.x)", preferredStyle: .alert)
-
-        // add an action (button)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-
-        // show the alert
-        present(alert, animated: true, completion: nil)
-      }
-        
-    }
-    
-    
-    
-    
-    
 }
 

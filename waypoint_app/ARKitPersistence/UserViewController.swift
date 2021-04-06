@@ -298,8 +298,8 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         // ? Should text nodes be children of their plane?
         guard let planeAnchor = anchor as? ARPlaneAnchor
         else {
-            // ? Do i really need to do this??
-            // ? Ask if geometry reloads for people in old view controller.
+            // Rendering existing anchors
+            // If location anchor doesn't have a name, it will have ??? by default
             generateTextNode(label: anchor.name ?? "???", anchor: anchor)
             print("went here")
             return
