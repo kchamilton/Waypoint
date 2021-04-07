@@ -56,7 +56,7 @@
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Logout"/>
                                         <connections>
-                                            <segue destination="BQm-J1-ztY" kind="presentation" id="7hE-gh-40t"/>
+                                            <segue destination="BQm-J1-ztY" kind="show" id="WDY-L6-fIN"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -91,7 +91,6 @@
                             <constraint firstItem="geN-6L-R06" firstAttribute="top" secondItem="yad-rR-V4b" secondAttribute="bottom" constant="15" id="ykm-SC-rIx"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="oFm-pp-RPP"/>
                     <connections>
                         <outlet property="infoLabel" destination="yad-rR-V4b" id="Nm9-6F-23X"/>
                         <outlet property="loadButton" destination="A4F-Ni-kDt" id="JDX-MY-h73"/>
@@ -108,9 +107,8 @@
         <!--Navigation Controller-->
         <scene sceneID="9di-rz-g72">
             <objects>
-                <navigationController id="aJ7-ZI-jXO" sceneMemberID="viewController">
+                <navigationController navigationBarHidden="YES" id="aJ7-ZI-jXO" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="GZV-Pj-bGC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -159,7 +157,7 @@
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Logout"/>
                                         <connections>
-                                            <segue destination="BQm-J1-ztY" kind="presentation" id="Cf2-Cj-NCH"/>
+                                            <segue destination="BQm-J1-ztY" kind="show" id="7O0-9D-i1o"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -184,6 +182,26 @@
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="highlightedColor" systemColor="systemBlueColor"/>
                             </label>
+                            <tableView hidden="YES" autoresizesSubviews="NO" contentMode="scaleAspectFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Qkl-cr-2jt">
+                                <rect key="frame" x="0.0" y="123" width="375" height="392"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="6kX-Do-NAj">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6kX-Do-NAj" id="mab-1d-rta">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <searchBar hidden="YES" autoresizesSubviews="NO" contentMode="scaleAspectFill" fixedFrame="YES" text="" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KOV-EX-BZc">
+                                <rect key="frame" x="0.0" y="67" width="375" height="56"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="T5f-fN-cdS"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -204,19 +222,20 @@
                             <constraint firstItem="UW5-cc-MNf" firstAttribute="top" secondItem="T5f-fN-cdS" secondAttribute="top" constant="523" id="xdG-N5-xL0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="BWF-yn-L7x"/>
                     <connections>
                         <outlet property="distanceLabel" destination="UW5-cc-MNf" id="xIz-AT-QdH"/>
                         <outlet property="infoLabel" destination="4C3-Cg-Y5T" id="iqJ-Rc-CKB"/>
                         <outlet property="loadButton" destination="GnD-MQ-WRs" id="C4F-Mx-pDs"/>
                         <outlet property="logoutButton" destination="mNW-5P-hgT" id="cOq-3J-ETX"/>
                         <outlet property="sceneView" destination="dXu-M7-KHE" id="co4-Db-Tvi"/>
+                        <outlet property="searchBar" destination="KOV-EX-BZc" id="00V-o4-EsX"/>
                         <outlet property="searchButton" destination="M68-mM-imO" id="mWS-fj-KAp"/>
+                        <outlet property="tableView" destination="Qkl-cr-2jt" id="De2-Ls-Q9A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wRN-Na-QcG" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="164" y="439"/>
+            <point key="canvasLocation" x="164" y="438.53073463268368"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="hu1-cA-K6g">
@@ -233,14 +252,14 @@
                                         <rect key="frame" x="0.0" y="0.0" width="161.5" height="40"/>
                                         <state key="normal" title="Admin Login"/>
                                         <connections>
-                                            <segue destination="BV1-FR-VrT" kind="presentation" id="tTP-vD-6ua"/>
+                                            <segue destination="BV1-FR-VrT" kind="show" id="dGB-Ck-JuC"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gvl-4b-Ilu">
                                         <rect key="frame" x="181.5" y="0.0" width="161.5" height="40"/>
                                         <state key="normal" title="User Login"/>
                                         <connections>
-                                            <segue destination="tZR-aO-nOn" kind="presentation" id="HJR-Hh-WHE"/>
+                                            <segue destination="tZR-aO-nOn" kind="show" id="Gqi-xq-E5k"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -257,7 +276,7 @@
                             <constraint firstItem="lCs-Z7-oZf" firstAttribute="bottom" secondItem="Bvr-kG-4I9" secondAttribute="bottom" constant="20" id="USr-PQ-6C0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="yCZ-Pv-Spj"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="yCZ-Pv-Spj"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IUI-Ci-PS9" sceneMemberID="firstResponder"/>
             </objects>
@@ -265,9 +284,12 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Cf2-Cj-NCH"/>
+        <segue reference="7O0-9D-i1o"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

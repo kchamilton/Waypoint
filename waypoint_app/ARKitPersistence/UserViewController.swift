@@ -10,9 +10,8 @@ import ARKit
     * Automatically save new plane nodes on quit?
 */
 
-class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
-
-
+class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+    
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var infoLabel: UILabel!
@@ -20,11 +19,16 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var logoutButton: UIButton!
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView! // Search results
+    
+    var searchActive : Bool = false
+    var filtered:[String] = []
+    var locations: [String] = []
+    
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()
 
-    
-    // * I think there's an actual anchors array held in session. Maybe not.
     var anchors: [ARAnchor] = []
 
     var destNodeAnchor: ARAnchor?
@@ -93,6 +97,13 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func setupUI() {
         setUpLabelsAndButtons(text: "Move the camera around to detect surfaces", distance: "Distance: N/A")
         loadButton.layer.cornerRadius = 10
+        
+        searchBar.placeholder = "Where do you want to go?"
+        searchBar.isHidden = true
+        tableView.isHidden = true
+        searchBar.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     func setUpLabelsAndButtons(text: String, distance: String) {
@@ -100,39 +111,6 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.distanceLabel.text = distance
     }
     
-//    func chooseDestination() {
-//        let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
-//        alert.addTextField { (textField) in
-//            textField.text = ""
-//        }
-//        alert.addAction(UIAlertAction(title: "Let's Go!", style: .default, handler: { [weak alert] (_) in
-//            let userInput = alert?.textFields![0].text!
-//
-//            self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
-//
-//            // Check to verify inputted location is unique and non-nil
-//            if self.destNode == nil || userInput == "" {
-//                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
-//                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
-//                    print("Choosing destination cancelled")
-//                }))
-//                self.present(errorAlert, animated: true, completion: self.chooseDestination)
-//            }
-//            // Set the location as the destination node
-//            for index in 0...(self.anchors.count - 1) {
-//                if self.anchors[index].name == userInput {
-//                    self.destNodeAnchor = self.anchors[index]
-//                } else {
-//                    print("No anchor found with that matching destination")
-//                }
-//            }
-//        }))
-//        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
-//            print("Cancelled.")
-//        }))
-//
-//        self.present(alert, animated: true, completion: nil)
-//    }
     ///Generates a text box to a node
     func generateTextNode(label: String, anchor: ARAnchor) {
         print("Generating text node for ", label)
@@ -258,40 +236,97 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActive = true;
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+        self.dismiss(animated: true, completion: nil);
+        searchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.isHidden = true
+        tableView.isHidden = true
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+
+        filtered = locations.filter({ (text) -> Bool in
+            let tmp: NSString = text as NSString
+            let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+            return range.location != NSNotFound
+        })
+        if (filtered.count == 0){
+            searchActive = false;
+        } else {
+            searchActive = true;
+        }
+        self.tableView.reloadData()
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (searchActive) {
+            return filtered.count
+        }
+        return locations.count;
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")! as UITableViewCell;
+        if (searchActive) {
+            cell.textLabel?.text = filtered[indexPath.row]
+        } else {
+            cell.textLabel?.text = locations[indexPath.row];
+        }
+        
+        return cell;
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = filtered[indexPath.row]
+        var locationExists = false
+        for index in 0...(self.anchors.count - 1) {
+            if self.anchors[index].name == cell {
+                self.destNodeAnchor = self.anchors[index]
+                locationExists = true
+            }
+        }
+        if (!locationExists) {
+            print("No anchor found with that matching destination")
+            let alert = UIAlertController(title: "Location Not Found", message: "No location found with that name", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        self.dismiss(animated: true, completion: nil);
+        searchBar.resignFirstResponder()
+        searchBar.isHidden = true
+        tableView.isHidden = true
+    }
+    
     /// Creates search bar for user to search building
     @IBAction func searchButtonAction(_ sender: Any) {
-        let alert = UIAlertController(title: "Where Do You Want To Go?", message: "Enter an existing location:", preferredStyle: .alert)
-        alert.addTextField { (textField) in
-            textField.text = ""
-        }
-        alert.addAction(UIAlertAction(title: "Let's Go!", style: .default, handler: { [weak alert] (_) in
-            let userInput = alert?.textFields![0].text!
-            
-            self.destNode = self.sceneView.scene.rootNode.childNode(withName: userInput!, recursively: true)
-            
-            /// Check to verify inputted location is unique and non-nil
-            if self.destNode == nil || userInput == "" {
-                let errorAlert = UIAlertController(title: "Invalid Location Name", message: "Please make sure your location exists.", preferredStyle: .alert)
-                errorAlert.addAction(UIAlertAction(title: "Got it", style: .default, handler: {_ in
-                    print("Choosing destination cancelled")
-                }))
-                self.present(errorAlert, animated: true, completion: nil)
-                return
-            }
-            /// Set the location as the destination node
-            for index in 0...(self.anchors.count - 1) {
-                if self.anchors[index].name == userInput {
-                    self.destNodeAnchor = self.anchors[index]
-                } else {
-                    print("No anchor found with that matching destination")
-                }
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: {_ in
-            print("Cancelled.")
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
+        searchBar.isHidden = false
+        tableView.isHidden = false
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -301,7 +336,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             // Rendering existing anchors
             // If location anchor doesn't have a name, it will have ??? by default
             generateTextNode(label: anchor.name ?? "???", anchor: anchor)
-            print("went here")
+            locations.append(anchor.name!)
             return
          }
         
