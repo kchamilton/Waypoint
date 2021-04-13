@@ -2,6 +2,7 @@
 
 **Branches:**  
 - kaylas_branch: login page and launch page extras  
+- kaylas_branch2: login page 2.0
 - lauras_branch: Adds persistant label to node with double tap -> just a text box  
 - lauras_branch3: Adds persistant label to node with double tap that should take into account x and y coordinates (dependent on where screen is tapped)  
 - niles_branch: path planning algorithm
