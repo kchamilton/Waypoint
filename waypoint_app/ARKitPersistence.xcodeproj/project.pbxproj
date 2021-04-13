@@ -384,15 +384,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BQ79AAK23R;
+				DEVELOPMENT_TEAM = X653NYB8GW;
 				INFOPLIST_FILE = ARKitPersistence/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bama.seniordesign.Waypoint;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = waypoint5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -404,15 +403,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3GZK5X99ZR;
+				DEVELOPMENT_TEAM = X653NYB8GW;
 				INFOPLIST_FILE = ARKitPersistence/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = waypoint5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
