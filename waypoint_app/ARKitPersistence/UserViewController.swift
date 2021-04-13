@@ -1,6 +1,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreLocation
 
 /*
 ? How to determine bounds of where user can go?
@@ -30,6 +31,10 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()
 
     var anchors: [ARAnchor] = []
+    
+    var locManager = CLLocationManager()
+    var currentLocation: CLLocation!
+    
 
     var destNodeAnchor: ARAnchor?
     var destNode: SCNNode?
@@ -47,6 +52,21 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+      //  https://stackoverflow.com/questions/26741591/how-to-get-current-longitude-and-latitude-using-cllocationmanager-swift
+        
+        locManager.requestWhenInUseAuthorization()
+
+                if (CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse ||
+                    CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways){
+                    guard let currentLocation = locManager.location else {
+                        return
+                    }
+                    print(currentLocation.coordinate.latitude)
+                    print(currentLocation.coordinate.longitude)
+                }
+            
+        
         
         /// Set the view's delegate
         sceneView.delegate = self
@@ -430,4 +450,8 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
 }
+
+
+
+
 

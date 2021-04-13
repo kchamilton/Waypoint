@@ -18,6 +18,12 @@
 		67CC5490260A7D3F00C5A8A2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC548F260A7D3F00C5A8A2 /* LoginViewController.swift */; };
 		67CC5496260A82DB00C5A8A2 /* AdminViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC5495260A82DB00C5A8A2 /* AdminViewControllerTests.swift */; };
 		67CC549A260A889300C5A8A2 /* UserViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CC5499260A889300C5A8A2 /* UserViewControllerTests.swift */; };
+		83C05E8B26254A410076DB8D /* graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05E8A26254A410076DB8D /* graph.swift */; };
+		83C05E8F26254A910076DB8D /* simpleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05E8E26254A910076DB8D /* simpleNode.swift */; };
+		83C05E9326254B030076DB8D /* sortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05E9226254B030076DB8D /* sortedArray.swift */; };
+		83C05E9726254B3B0076DB8D /* stepAndComp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05E9626254B3B0076DB8D /* stepAndComp.swift */; };
+		83C05EA1262554DC0076DB8D /* map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05EA0262554DC0076DB8D /* map.swift */; };
+		83C05EE1262578A80076DB8D /* pathfinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C05EE0262578A80076DB8D /* pathfinder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +52,12 @@
 		67CC548F260A7D3F00C5A8A2 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		67CC5495260A82DB00C5A8A2 /* AdminViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewControllerTests.swift; sourceTree = "<group>"; };
 		67CC5499260A889300C5A8A2 /* UserViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewControllerTests.swift; sourceTree = "<group>"; };
+		83C05E8A26254A410076DB8D /* graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graph.swift; sourceTree = "<group>"; };
+		83C05E8E26254A910076DB8D /* simpleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simpleNode.swift; sourceTree = "<group>"; };
+		83C05E9226254B030076DB8D /* sortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sortedArray.swift; sourceTree = "<group>"; };
+		83C05E9626254B3B0076DB8D /* stepAndComp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stepAndComp.swift; sourceTree = "<group>"; };
+		83C05EA0262554DC0076DB8D /* map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = map.swift; sourceTree = "<group>"; };
+		83C05EE0262578A80076DB8D /* pathfinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pathfinder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +105,12 @@
 				677DE527260974E900E530A2 /* AdminViewController.swift */,
 				677DE526260974E900E530A2 /* UserViewController.swift */,
 				1802A2FD2181A26B00045536 /* Assets.xcassets */,
+				83C05E8A26254A410076DB8D /* graph.swift */,
+				83C05E9626254B3B0076DB8D /* stepAndComp.swift */,
+				83C05E9226254B030076DB8D /* sortedArray.swift */,
+				83C05EA0262554DC0076DB8D /* map.swift */,
+				83C05E8E26254A910076DB8D /* simpleNode.swift */,
+				83C05EE0262578A80076DB8D /* pathfinder.swift */,
 				675EA46326014CCE00FDAD06 /* Arrow.png */,
 				1802A2FF2181A26B00045536 /* LaunchScreen.storyboard */,
 				1802A3022181A26B00045536 /* Info.plist */,
@@ -214,10 +232,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83C05EE1262578A80076DB8D /* pathfinder.swift in Sources */,
+				83C05EA1262554DC0076DB8D /* map.swift in Sources */,
 				67CC5490260A7D3F00C5A8A2 /* LoginViewController.swift in Sources */,
 				677DE529260974E900E530A2 /* AdminViewController.swift in Sources */,
+				83C05E9726254B3B0076DB8D /* stepAndComp.swift in Sources */,
+				83C05E9326254B030076DB8D /* sortedArray.swift in Sources */,
 				677DE528260974E900E530A2 /* UserViewController.swift in Sources */,
 				1802A2F52181A26900045536 /* AppDelegate.swift in Sources */,
+				83C05E8B26254A410076DB8D /* graph.swift in Sources */,
+				83C05E8F26254A910076DB8D /* simpleNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,15 +408,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BQ79AAK23R;
+				DEVELOPMENT_TEAM = DL44KBU9UN;
 				INFOPLIST_FILE = ARKitPersistence/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = bama.seniordesign.Waypoint;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint;
+				PRODUCT_BUNDLE_IDENTIFIER = bama.seniordesign.Waypoint3;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -404,7 +428,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3GZK5X99ZR;
+				DEVELOPMENT_TEAM = DL44KBU9UN;
 				INFOPLIST_FILE = ARKitPersistence/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -412,7 +436,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "-";
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=*]" = bama.seniordesign.Waypoint3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
