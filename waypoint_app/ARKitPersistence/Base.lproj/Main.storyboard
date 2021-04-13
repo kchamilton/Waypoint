@@ -56,7 +56,7 @@
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Logout"/>
                                         <connections>
-                                            <segue destination="BQm-J1-ztY" kind="presentation" id="7hE-gh-40t"/>
+                                            <segue destination="BQm-J1-ztY" kind="show" id="6Cq-FW-lZc"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -159,7 +159,7 @@
                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Logout"/>
                                         <connections>
-                                            <segue destination="BQm-J1-ztY" kind="presentation" id="Cf2-Cj-NCH"/>
+                                            <segue destination="BQm-J1-ztY" kind="show" id="lHH-cY-xIz"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -234,7 +234,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Admin Login"/>
                                         <connections>
-                                            <segue destination="BV1-FR-VrT" kind="presentation" id="tTP-vD-6ua"/>
+                                            <segue destination="BV1-FR-VrT" kind="show" id="sF0-jy-f76"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gvl-4b-Ilu">
@@ -242,7 +242,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="User Login"/>
                                         <connections>
-                                            <segue destination="tZR-aO-nOn" kind="presentation" id="HJR-Hh-WHE"/>
+                                            <segue destination="tZR-aO-nOn" kind="show" id="WVO-8p-hJO"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -302,8 +302,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="HJR-Hh-WHE"/>
-        <segue reference="Cf2-Cj-NCH"/>
+        <segue reference="lHH-cY-xIz"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Arrow.png" width="160" height="263"/>
