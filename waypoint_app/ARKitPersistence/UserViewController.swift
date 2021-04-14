@@ -193,7 +193,10 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         arrowNode.name = "arrow"
         arrowNode.position = SCNVector3(x: 0, y: 0, z: -2)
         arrowNode.scale = SCNVector3(0.1, 0.1, 0.1)
-        arrowNode.constraints = [SCNLookAtConstraint.init(target: destNode)]
+//        arrowNode.constraints = [SCNLookAtConstraint(target: destNode)]
+        let lookAtConstraint = SCNLookAtConstraint(target: destNode)
+        lookAtConstraint.localFront = SCNVector3Make(0, 0, 1)
+        arrowNode.constraints = [lookAtConstraint]
         return arrowNode
     }
     
@@ -244,15 +247,15 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         searchActive = false;
     }
 
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-        self.dismiss(animated: true, completion: nil);
-        searchBar.resignFirstResponder()
-        searchBar.showsCancelButton = false
-        searchBar.text = ""
-        searchBar.isHidden = true
-        tableView.isHidden = true
-    }
+//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        searchActive = false;
+//        self.dismiss(animated: true, completion: nil);
+//        searchBar.resignFirstResponder()
+//        searchBar.showsCancelButton = false
+//        searchBar.text = ""
+//        searchBar.isHidden = true
+//        tableView.isHidden = true
+//    }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchActive = false;
@@ -294,6 +297,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")! as UITableViewCell;
         if (searchActive) {
+            print("index out of range checker: ", cell)
             cell.textLabel?.text = filtered[indexPath.row]
         } else {
             cell.textLabel?.text = locations[indexPath.row];
@@ -308,9 +312,11 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         for index in 0...(self.anchors.count - 1) {
             if self.anchors[index].name == cell {
                 self.destNodeAnchor = self.anchors[index]
+                self.destNode = self.sceneView.scene.rootNode.childNode(withName: cell, recursively: true)
                 locationExists = true
             }
         }
+        // I don't think this would ever be triggered
         if (!locationExists) {
             print("No anchor found with that matching destination")
             let alert = UIAlertController(title: "Location Not Found", message: "No location found with that name", preferredStyle: UIAlertController.Style.alert)
@@ -374,7 +380,7 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         if destNodeAnchor != nil {
             let arrow = sceneView.scene.rootNode.childNode(withName: "arrow", recursively: true)
             /// Point arrow at destination
-            arrow?.constraints = [SCNLookAtConstraint.init(target: destNode)]
+//            arrow?.constraints = [SCNLookAtConstraint(target: destNode)]
             
             /// Generate arrow
             if let pointOfView = sceneView.pointOfView {
