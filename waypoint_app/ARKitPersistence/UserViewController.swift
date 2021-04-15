@@ -193,10 +193,13 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         arrowNode.name = "arrow"
         arrowNode.position = SCNVector3(x: 0, y: 0, z: -2)
         arrowNode.scale = SCNVector3(0.1, 0.1, 0.1)
+   //     arrowNode.localRotate(by: SCNQuaternion(x: 1, y: 0, z: 0, w: 0.7071))
+      //  arrowNode.rotation = SCNVector4Make(1, 1, 0, .pi / 2)
 //        arrowNode.constraints = [SCNLookAtConstraint(target: destNode)]
+   //     arrowNode.constraints = [SCNLookAtConstraint.init(target: destNode)]
         let lookAtConstraint = SCNLookAtConstraint(target: destNode)
-        lookAtConstraint.localFront = SCNVector3Make(0, 0, 1)
-        arrowNode.constraints = [lookAtConstraint]
+        lookAtConstraint.localFront = SCNVector3Make(-1.5, -1, 0)
+                arrowNode.constraints = [lookAtConstraint]
         return arrowNode
     }
     
