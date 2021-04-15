@@ -314,10 +314,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="yCZ-Pv-Spj"/>
-                    <connections>
-                        <outlet property="password" destination="Bv2-iY-nZl" id="nwc-6W-yfR"/>
-                        <outlet property="username" destination="Rdb-iN-zQq" id="kGW-vB-71R"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IUI-Ci-PS9" sceneMemberID="firstResponder"/>
             </objects>
