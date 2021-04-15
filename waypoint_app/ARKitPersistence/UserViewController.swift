@@ -250,27 +250,33 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         searchActive = false;
     }
 
-//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//        searchActive = false;
-//        self.dismiss(animated: true, completion: nil);
-//        searchBar.resignFirstResponder()
-//        searchBar.showsCancelButton = false
-//        searchBar.text = ""
-//        searchBar.isHidden = true
-//        tableView.isHidden = true
-//    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+        self.dismiss(animated: true, completion: nil);
+        searchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.isHidden = true
+        tableView.isHidden = true
+    }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchActive = false;
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchBar.showsCancelButton = true
 
-        filtered = locations.filter({ (text) -> Bool in
-            let tmp: NSString = text as NSString
-            let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
-            return range.location != NSNotFound
-        })
+        if (searchText == "") {
+            filtered = locations
+        } else {
+            filtered = locations.filter({ (text) -> Bool in
+                let tmp: NSString = text as NSString
+                let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+                return range.location != NSNotFound
+            })
+        }
+        
         if (filtered.count == 0){
             searchActive = false;
         } else {
