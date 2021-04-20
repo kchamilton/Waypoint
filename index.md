@@ -8,10 +8,13 @@
 ### **Approach**
 #### Tools /APIS / Frameworks
 ##### We will be utilzation ARKit, an AR SDK. We will create an IOS app written in swift using Xcode. To achieve the type of granularity and location accuracy, we will implement SLAM technology used in the swift package ARWorld to ensure accurate localization and mapping. 
-#### Overall User Experience
+#### Overall Intended User Experience
 ##### A new visitor, Jamie, MBUSI begins work today at the plant. They recieve an email with their login credentials as an employee from an administrator. As they leave their car, they open the Waypoint app they downloaded the night before. Jamie logs into the app with their employee credentials once they enter the lobby of the plant. Their first meeting is in conference room 2321. Jamie opens the app and enters the location into the search bar of the application interface. The room appears in the query results and Jamie selects it. An AR map of the lobby appears before Jamie on their phone, and Jamie follows the directions that appear on the screen. Jamie turns left down on hallway. A sign for a bathroom appears on his application interface. Jamie notes that for after the meeting. Jamie turns right, as instructed. An administration tag comes up for a fire escape ahead. "Neat," Jamie thinks. Jamie reaches the conference room in time for the meeting. Jamie knows that each day will start here, so they bookmark the location in the app so that it can be found easily the next morning.  
 
 #### **Youtube Link**
+##### Demo in presentation shows another user experience 
+
+### https://www.youtube.com/watch?v=JWLMpwldc4E
 
 #### **Links to Repo** 
 ### https://github.com/kchamilton/Waypoint
