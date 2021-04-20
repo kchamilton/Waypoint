@@ -9,6 +9,9 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreData
+import Foundation
+
 
 class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
@@ -21,6 +24,17 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     @IBOutlet weak var touchLabel: UIButton!
     
     var anchors: [ARAnchor] = []
+    
+    var container: NSPersistentContainer!
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    var context:NSManagedObjectContext!
+    
+    
+    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>!
+
+    
     
     var horizontalPlanes = [ARPlaneAnchor: SCNNode]()
     var verticalPlanes = [ARPlaneAnchor: SCNNode]()
@@ -39,6 +53,7 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         /// Set the view's delegate
         sceneView.delegate = self
         
@@ -56,7 +71,8 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         sceneView.automaticallyUpdatesLighting = true
         
         setUpUI()
-        addGestureRecognizers()   
+        addGestureRecognizers()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -277,7 +293,10 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
         resetTrackingConfiguration()
     }
     
+   
     @IBAction func saveButtonAction(_ sender: Any) {
+        
+        
         sceneView.session.getCurrentWorldMap { (worldMap, error) in
             guard let worldMap = worldMap else {
                 self.setUpLabelsAndButtons(text: "Can't get current world map", canShowSaveButton: false)
@@ -288,11 +307,17 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
                 let data = try NSKeyedArchiver.archivedData(withRootObject: worldMap, requiringSecureCoding: true)
                 try data.write(to: self.worldMapURL, options: [.atomic])
                 self.showAlert(message: "Map Saved")
+                self.openDatabase()
             } catch {
                 fatalError("Can't save map: \(error.localizedDescription)")
             }
         }
+        
     }
+    
+    
+    
+    
     
     // MARK: - ARSCNViewDelegate
     
@@ -383,5 +408,63 @@ class AdminViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegat
                 setUpLabelsAndButtons(text: "Map Status: Not available", canShowSaveButton: false)
         }
     }
+    
+    class PersistentContainer: NSPersistentContainer {
+
+        func saveContext(backgroundContext: NSManagedObjectContext? = nil) {
+            let context = backgroundContext ?? viewContext
+            guard context.hasChanges else { return }
+            do {
+                try context.save()
+            } catch let error as NSError {
+                print("Error: \(error), \(error.userInfo)")
+            }
+        }
+    }
+    
+    
+    func openDatabase()
+        {
+            let managedContext = appDelegate.persistentContainer.viewContext
+            let entity = NSEntityDescription.entity(forEntityName: "ARKitPersistence", in : managedContext)!
+            let mapObject = NSManagedObject(entity: entity, insertInto: context)
+            saveData(UserDBObj:mapObject)
+        }
+        func saveData(UserDBObj:NSManagedObject)
+        {
+            UserDBObj.setValue(self.saveButtonAction, forKey: "mapObject")
+    
+
+            print("Storing Data..")
+            do {
+                try context.save()
+            } catch {
+                print("Storing data Failed")
+            }
+
+            fetchData()
+        }
+
+        func fetchData()
+        {
+            print("Fetching Data..")
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "ARKitPersistence")
+            request.returnsObjectsAsFaults = false
+            
+            do {
+                let result = try context.fetch(request)
+                for data in result as! [NSManagedObject] {
+                    let mapName = data.value(forKey: "mapObject") as! String
+                    
+                    print("Map is :", mapName)
+                }
+            } catch {
+                print("Fetching data Failed")
+            }
+        }
+    
+  
+    
+    
 }
 
