@@ -1,6 +1,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreData
 
 /*
 ? How to determine bounds of where user can go?
@@ -10,7 +11,7 @@ import ARKit
     * Automatically save new plane nodes on quit?
 */
 
-class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var distanceLabel: UILabel!
@@ -21,6 +22,8 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView! // Search results
+    
+    var container: NSPersistentContainer!
     
     var searchActive : Bool = false
     var filtered:[String] = []
@@ -429,5 +432,11 @@ class UserViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 setUpLabelsAndButtons(text: "Map Status: Not available", distance: distance)
         }
     }
+    
+    
+
+    
+    
+    
 }
 

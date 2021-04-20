@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18153" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <elements/>
+    <entity name="Data" representedClassName="Data" syncable="YES" codeGenerationType="class">
+        <attribute name="mapObject" optional="YES" attributeType="Binary"/>
+    </entity>
+    <elements>
+        <element name="Data" positionX="-45" positionY="0" width="128" height="44"/>
+    </elements>
 </model>
