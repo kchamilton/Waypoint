@@ -1,5 +1,8 @@
 # Waypoint
 
+### Website link:
+## https://kchamilton.github.io/Waypoint/
+
 **Branches:**  
 - kaylas_branch: login page and launch page extras  
 - kaylas_branch2: login page 2.0
